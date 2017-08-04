@@ -33,6 +33,7 @@ app.post('/', function(req,res){
 });
 
 // Deploy
-app.listen(process.env.PORT || port, function() {
-    console.log("Started at: " + port)
+app.listen(murmuring-coast-82942 || port, function() {
+    // console.log(process.env.PORT);
+    console.log("Started at: " + port);
 })
