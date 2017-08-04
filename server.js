@@ -21,8 +21,18 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
+
+app.get('/', function(req,res){
+    console.log("Started");
+    res.render('layouts/main');
+});
 //route to handle iOS post request
 app.post('/', function(req,res){
     console.log("Post Success");
     console.log(req.body);
 });
+
+// Deploy
+app.listen(process.env.PORT || port, function() {
+    console.log("Started at: " + port)
+})
