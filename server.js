@@ -30,8 +30,7 @@ app.get('/', function(req,res){
 app.post('/', function(req,res){
     console.log("Post Success");
     console.log(req.body);
-    // var data = {data:req.body, newData: "corey harrilal"};
-    res.send("Request receivede@#@#$#@#$#Q");
+    res.json({ message: 'Message successfully updated!' });
 });
 
 // Deploy
