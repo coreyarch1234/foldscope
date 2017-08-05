@@ -22,10 +22,10 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
 
-app.get('/', function(req,res){
-    console.log("Started");
-    res.render('layouts/main');
-});
+// app.get('/', function(req,res){
+//     console.log("Started");
+//     res.render('layouts/main');
+// });
 //route to handle iOS post request
 app.post('/', function(req,res){
     console.log("Post Success");
@@ -33,7 +33,7 @@ app.post('/', function(req,res){
 });
 
 // Deploy
-app.listen(murmuring-coast-82942 || port, function() {
-    // console.log(process.env.PORT);
+app.listen(process.env.PORT || port, function() {
+    console.log(process.env.PORT);
     console.log("Started at: " + port);
 })
