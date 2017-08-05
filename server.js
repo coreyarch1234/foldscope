@@ -24,6 +24,7 @@ app.use(express.static('public'));
 
 app.get('/', function(req,res){
     console.log("Started");
+    console.log("Production Port" + process.env.PORT);
     res.render('layouts/main');
 });
 //route to handle iOS post request
