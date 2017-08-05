@@ -30,8 +30,8 @@ app.get('/', function(req,res){
 app.post('/', function(req,res){
     console.log("Post Success");
     console.log(req.body);
-    var data = {data:req, newData: "corey harrilal"};
-    res.send(data);
+    // var data = {data:req, newData: "corey harrilal"};
+    // res.send(data);
 });
 
 // Deploy
