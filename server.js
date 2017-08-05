@@ -22,10 +22,10 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
 
-// app.get('/', function(req,res){
-//     console.log("Started");
-//     res.render('layouts/main');
-// });
+app.get('/', function(req,res){
+    console.log("Started");
+    res.render('layouts/main');
+});
 //route to handle iOS post request
 app.post('/', function(req,res){
     console.log("Post Success");
