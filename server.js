@@ -124,13 +124,13 @@ app.post('/', function(req,res){
         }
     });
     console.log(newsFeed);
-    // res.json(newsFeed);
-    res.json({
-        title: "title",
-        author: "author",
-        date: "date",
-        category: "category"
-    })
+    res.json(newsFeed);
+    // res.json({
+    //     title: "title",
+    //     author: "author",
+    //     date: "date",
+    //     category: "category"
+    // })
 });
 
 // //make a request to web page to scrape
