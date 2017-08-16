@@ -34,37 +34,147 @@ app.use(express.static('public'));
 app.get('/', function(req,res){
     console.log("Started");
     console.log("Production Port" + process.env.PORT);
+    //make a request to web page to scrape
+    // var newsFeed = {};
+    // request(url, function(error, response, body){
+    //     if (!error){
+    //         var $ = cheerio.load(body);
+    //         var blogText = $.text();
+    //         var blogHTML = $.html();
+    //
+    //         //Title
+    //         var title = $('h1.entry-title').text();
+    //
+    //         //Author
+    //         var author = $('span.author').text();
+    //
+    //         //Date
+    //         var date = $('time.entry-date').text();
+    //
+    //         //Category
+    //         var category = $("[rel='category']").text();
+    //
+    //
+    //         console.log("Page scraped successfully");
+    //         console.log();
+    //         // console.log(blogText);
+    //         // console.log(blogHTML);
+    //         console.log(title);
+    //         console.log(author);
+    //         console.log(date);
+    //         console.log(category);
+    //         newsFeed = {
+    //             title: title,
+    //             author: author,
+    //             date: date,
+    //             category: category
+    //         }
+    //         // console.log(newsFeed);
+    //         // res.render('layouts/main', {blog: blogText});
+    //     }else{
+    //         console.log("An error occurred with scraping");
+    //     }
+    // });
+    // console.log(newsFeed);
+    // res.json({ message: 'Message successfully updated!' });
     res.render('layouts/main');
 });
 //route to handle iOS post request
 app.post('/', function(req,res){
     console.log("Post Success");
-    console.log(req.body);
-    res.json({ message: 'Message successfully updated!' });
-});
-
-// //make a request to web page to scrape
-function requestWebPage() {
+    // //make a request to web page to scrape
+    var newsFeed = {};
     request(url, function(error, response, body){
         if (!error){
-            var blog = cheerio.load(body);
-            // var blogText = blog.text();
-            var blogText = blog.html();
+            var $ = cheerio.load(body);
+            var blogText = $.text();
+            var blogHTML = $.html();
+
+            //Title
+            var title = $('h1.entry-title').text();
+
+            //Author
+            var author = $('span.author').text();
+
+            //Date
+            var date = $('time.entry-date').text();
+
+            //Category
+            var category = $("[rel='category']").text();
 
 
-            console.log("Page scraped successfully" + blogText);
+            console.log("Page scraped successfully");
+            console.log();
+            // console.log(blogText);
+            // console.log(blogHTML);
+            console.log(title);
+            console.log(author);
+            console.log(date);
+            console.log(category);
+            var newsFeed = {
+                title: title,
+                author: author,
+                date: date,
+                category: category
+            }
+            // console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
             console.log("An error occurred with scraping");
         }
-    })
-};
+    });
+    console.log(newsFeed);
+    res.json(newsFeed);
+});
 
-requestWebPage();
+// //make a request to web page to scrape
+// function requestWebPage() {
+//     request(url, function(error, response, body){
+//         if (!error){
+//             var $ = cheerio.load(body);
+//             var blogText = $.text();
+//             var blogHTML = $.html();
+//
+//             //Title
+//             var title = $('h1.entry-title').text();
+//
+//             //Author
+//             var author = $('span.author').text();
+//
+//             //Date
+//             var date = $('time.entry-date').text();
+//
+//             //Category
+//             var category = $("[rel='category']").text();
+//
+//
+//             console.log("Page scraped successfully");
+//             console.log();
+//             // console.log(blogText);
+//             // console.log(blogHTML);
+//             console.log(title);
+//             console.log(author);
+//             console.log(date);
+//             console.log(category);
+//             var newsFeed = {
+//                 title: title,
+//                 author: author,
+//                 date: date,
+//                 category: category
+//             }
+//             console.log(newsFeed)
+//             // res.render('layouts/main', {blog: blogText});
+//         }else{
+//             console.log("An error occurred with scraping");
+//         }
+//     })
+// };
+//
+// requestWebPage();
 
 
 // Deploy
 app.listen(process.env.PORT || port, function() {
-    console.log(process.env.PORT);
+    // console.log(process.env.PORT);
     console.log("Started at: " + port);
 })
