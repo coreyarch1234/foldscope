@@ -7,8 +7,17 @@ var exphbs  = require('express-handlebars');
 var app = express();
 //To parse post requests
 var bodyParser = require('body-parser');
+//request to merge HTTP and HTTPS
+var request = require("request");
+//cheerio to work with downloaded web data using jquery on the server
+cheerio = require("cheerio");
+
+//web page to scrape
+url = "https://microcosmos.foldscope.com/?p=26017";
+
 //port 3000
 var port = 3000;
+
 
 //body parser
 app.use(bodyParser.json());
@@ -33,6 +42,26 @@ app.post('/', function(req,res){
     console.log(req.body);
     res.json({ message: 'Message successfully updated!' });
 });
+
+// //make a request to web page to scrape
+function requestWebPage() {
+    request(url, function(error, response, body){
+        if (!error){
+            var blog = cheerio.load(body);
+            // var blogText = blog.text();
+            var blogText = blog.html();
+
+
+            console.log("Page scraped successfully" + blogText);
+            // res.render('layouts/main', {blog: blogText});
+        }else{
+            console.log("An error occurred with scraping");
+        }
+    })
+};
+
+requestWebPage();
+
 
 // Deploy
 app.listen(process.env.PORT || port, function() {
