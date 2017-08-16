@@ -117,6 +117,7 @@ app.post('/', function(req,res){
                 date: date,
                 category: category
             }
+            response.json(newsFeed);
             // console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
