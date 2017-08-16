@@ -111,7 +111,7 @@ app.post('/', function(req,res){
             console.log(author);
             console.log(date);
             console.log(category);
-            var newsFeed = {
+            newsFeed = {
                 title: title,
                 author: author,
                 date: date,
