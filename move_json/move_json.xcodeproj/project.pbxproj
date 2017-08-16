@@ -135,7 +135,7 @@
 				TargetAttributes = {
 					C0CF69BA1F190F1C009B5024 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = HGS8K6RYR7;
+						DevelopmentTeam = K65P9Z3374;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -353,7 +353,7 @@
 			baseConfigurationReference = 13E7B8C57B90ACF76F00477B /* Pods-move_json.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = HGS8K6RYR7;
+				DEVELOPMENT_TEAM = K65P9Z3374;
 				INFOPLIST_FILE = move_json/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marquavious.move-json";
@@ -367,7 +367,7 @@
 			baseConfigurationReference = 15C996A9EBB4A594289E80A6 /* Pods-move_json.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = HGS8K6RYR7;
+				DEVELOPMENT_TEAM = K65P9Z3374;
 				INFOPLIST_FILE = move_json/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marquavious.move-json";
