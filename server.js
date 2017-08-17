@@ -58,7 +58,7 @@ app.get('/', function(req,res){
     //         console.log("Page scraped successfully");
     //         console.log();
     //         // console.log(blogText);
-    //         // console.log(blogHTML);
+            // console.log(blogHTML);
     //         console.log(title);
     //         console.log(author);
     //         console.log(date);
@@ -117,7 +117,7 @@ app.post('/', function(req,res){
                 date: date,
                 category: category
             }
-            response.json(newsFeed);
+            res.json(newsFeed);
             // console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
@@ -125,13 +125,7 @@ app.post('/', function(req,res){
         }
     });
     console.log(newsFeed);
-    res.json(newsFeed);
-    // res.json({
-    //     title: "title",
-    //     author: "author",
-    //     date: "date",
-    //     category: "category"
-    // })
+    // res.json(newsFeed);
 });
 
 // //make a request to web page to scrape
