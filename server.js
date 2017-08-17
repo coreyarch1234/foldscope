@@ -43,7 +43,10 @@ app.get('/', function(req,res){
     //         var blogHTML = $.html();
     //
     //         //Title
-    //         var title = $('h1.entry-title').text();
+    //         var title = $('h1.entry-title').text().trim();
+    //         // title = title.trim();
+    //         console.log("The title is")
+    //         console.log(title);
     //
     //         //Author
     //         var author = $('span.author').text();
@@ -53,12 +56,12 @@ app.get('/', function(req,res){
     //
     //         //Category
     //         var category = $("[rel='category']").text();
-    //
-    //
+
+
     //         console.log("Page scraped successfully");
     //         console.log();
     //         // console.log(blogText);
-            // console.log(blogHTML);
+    //         // console.log(blogHTML);
     //         console.log(title);
     //         console.log(author);
     //         console.log(date);
@@ -69,15 +72,14 @@ app.get('/', function(req,res){
     //             date: date,
     //             category: category
     //         }
-    //         // console.log(newsFeed);
+    //         console.log(newsFeed);
     //         // res.render('layouts/main', {blog: blogText});
     //     }else{
     //         console.log("An error occurred with scraping");
     //     }
     // });
     // console.log(newsFeed);
-    // res.json({ message: 'Message successfully updated!' });
-    res.render('layouts/main');
+    // res.render('layouts/main');
 });
 //route to handle iOS post request
 app.post('/', function(req,res){
@@ -91,7 +93,9 @@ app.post('/', function(req,res){
             var blogHTML = $.html();
 
             //Title
-            var title = $('h1.entry-title').text();
+            var title = $('h1.entry-title').text().trim();
+            console.log("The title is")
+            console.log(title);
 
             //Author
             var author = $('span.author').text();
