@@ -35,6 +35,8 @@ module.exports = function(url, res) {
             //main header image
             var headerImageURL = $('div.entry-media-thumb').css('background-image');
             headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+         
+
             newsFeed = {
                 title: title,
                 author: author,

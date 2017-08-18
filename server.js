@@ -40,8 +40,8 @@ app.get('/', function(req,res){
     console.log("Production Port" + process.env.PORT);
     //make a request to web page to scrape
     //This will give the titile, author, category, date, wpURL, and main header image url
-    // var newsFeed = urlScraper(url,res);
-    // console.log(newsFeed);
+    var newsFeed = urlScraper(url,res);
+    console.log(newsFeed);
     request(groupURL, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
@@ -49,25 +49,33 @@ app.get('/', function(req,res){
             var blogHTML = $.html();
 
             //main header image
-            // var allURL = $('.link-more').find('a').attr('href');
-            var re = /ab+c/;
+            var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
+            var link = "";
+            var arrLink = [];
             var allURL = $('a').each(function(){
-                console.log($(this).attr('href'));
-            })
-            // var allURL = $('div.entry-inner');
-            // headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
-            // newsFeed = {
-            //     title: title,
-            //     author: author,
-            //     date: date,
-            //     category: category,
-            //     wordPressURL: wordPressURL,
-            //     headerImageURL: headerImageURL
-            // }
-            // console.log(allURL);
-            // console.log(blogHTML);
-            // res.json(newsFeed);
-            // return newsFeed;
+                link = $(this).attr('href');
+                if (wordPressURLReg.test(link)){
+                    if (link.indexOf("#") !=-1) {
+                        console.log("this is a comment and should not be included");
+                    }else{
+                        arrLink.push(link);
+                    }
+                }
+            });
+            console.log("list of links");
+            console.log(arrLink);
+            newsFeed = {
+                title: title,
+                author: author,
+                date: date,
+                category: category,
+                wordPressURL: wordPressURL,
+                headerImageURL: headerImageURL
+            }
+            console.log(allURL);
+            console.log(blogHTML);
+            res.json(newsFeed);
+            return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }
