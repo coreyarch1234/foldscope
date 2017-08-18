@@ -139,6 +139,8 @@ app.post('/', function(req,res){
                 wordPressURL: wordPressURL,
                 headerImageURL: headerImageURL
             }
+            res.json(newsFeed);
+            console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
             console.log("An error occurred with scraping");
