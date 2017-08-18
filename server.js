@@ -34,52 +34,60 @@ app.use(express.static('public'));
 app.get('/', function(req,res){
     console.log("Started");
     console.log("Production Port" + process.env.PORT);
-    //make a request to web page to scrape
-    // var newsFeed = {};
-    // request(url, function(error, response, body){
-    //     if (!error){
-    //         var $ = cheerio.load(body);
-    //         var blogText = $.text();
-    //         var blogHTML = $.html();
-    //
-    //         //Title
-    //         var title = $('h1.entry-title').text().trim();
-    //         // title = title.trim();
-    //         console.log("The title is")
-    //         console.log(title);
-    //
-    //         //Author
-    //         var author = $('span.author').text();
-    //
-    //         //Date
-    //         var date = $('time.entry-date').text();
-    //
-    //         //Category
-    //         var category = $("[rel='category']").text();
+    // //make a request to web page to scrape
+    var newsFeed = {};
+    request(url, function(error, response, body){
+        if (!error){
+            var $ = cheerio.load(body);
+            var blogText = $.text();
+            var blogHTML = $.html();
 
+            //Title
+            var title = $('h1.entry-title').text().trim();
+            console.log("The title is")
+            console.log(title);
 
-    //         console.log("Page scraped successfully");
-    //         console.log();
-    //         // console.log(blogText);
-    //         // console.log(blogHTML);
-    //         console.log(title);
-    //         console.log(author);
-    //         console.log(date);
-    //         console.log(category);
-    //         newsFeed = {
-    //             title: title,
-    //             author: author,
-    //             date: date,
-    //             category: category
-    //         }
-    //         console.log(newsFeed);
-    //         // res.render('layouts/main', {blog: blogText});
-    //     }else{
-    //         console.log("An error occurred with scraping");
-    //     }
-    // });
-    // console.log(newsFeed);
-    // res.render('layouts/main');
+            //Author
+            var author = $('span.author').text();
+
+            //Date
+            var date = $('time.entry-date').text();
+
+            //Category
+            var category = $("[rel='category']").text();
+
+            //url
+            var wordPressURL = url;
+
+            //main header image
+            var headerImageURL = $('div.entry-media-thumb').css('background-image');
+            headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+
+            console.log("Page scraped successfully");
+            console.log();
+            console.log("The url is " + url);
+            console.log(headerImageURL);
+            // console.log(blogText);
+            // console.log(blogHTML);
+            // console.log(title);
+            // console.log(author);
+            // console.log(date);
+            // console.log(category);
+            newsFeed = {
+                title: title,
+                author: author,
+                date: date,
+                category: category,
+                wordPressURL: wordPressURL,
+                headerImageURL: headerImageURL
+            }
+            res.json(newsFeed);
+            console.log(newsFeed);
+            // res.render('layouts/main', {blog: blogText});
+        }else{
+            console.log("An error occurred with scraping");
+        }
+    });
 });
 //route to handle iOS post request
 app.post('/', function(req,res){
@@ -106,6 +114,13 @@ app.post('/', function(req,res){
             //Category
             var category = $("[rel='category']").text();
 
+            //url
+            var url = url;
+
+            //main header image
+            var headerImageURL = $('div.entry-media-thumb').css('background-image');
+            headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+
 
             console.log("Page scraped successfully");
             console.log();
@@ -115,14 +130,17 @@ app.post('/', function(req,res){
             console.log(author);
             console.log(date);
             console.log(category);
+            console.log(headerImageURL);
             newsFeed = {
                 title: title,
                 author: author,
                 date: date,
-                category: category
+                category: category,
+                url: url,
+                headerImageURL: headerImageURL
             }
             res.json(newsFeed);
-            // console.log(newsFeed);
+            console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
             console.log("An error occurred with scraping");
