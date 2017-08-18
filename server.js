@@ -115,32 +115,30 @@ app.post('/', function(req,res){
             var category = $("[rel='category']").text();
 
             //url
-            var url = url;
+            var wordPressURL = url;
 
             //main header image
             var headerImageURL = $('div.entry-media-thumb').css('background-image');
             headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
 
-
             console.log("Page scraped successfully");
             console.log();
+            console.log("The url is " + url);
+            console.log(headerImageURL);
             // console.log(blogText);
             // console.log(blogHTML);
-            console.log(title);
-            console.log(author);
-            console.log(date);
-            console.log(category);
-            console.log(headerImageURL);
+            // console.log(title);
+            // console.log(author);
+            // console.log(date);
+            // console.log(category);
             newsFeed = {
                 title: title,
                 author: author,
                 date: date,
                 category: category,
-                url: url,
+                wordPressURL: wordPressURL,
                 headerImageURL: headerImageURL
             }
-            res.json(newsFeed);
-            console.log(newsFeed);
             // res.render('layouts/main', {blog: blogText});
         }else{
             console.log("An error occurred with scraping");
