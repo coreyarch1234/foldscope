@@ -13,7 +13,11 @@ var request = require("request");
 cheerio = require("cheerio");
 
 //web page to scrape
-url = "https://microcosmos.foldscope.com/?p=26017";
+var url = "https://microcosmos.foldscope.com/?p=26017";
+var groupURL = "https://microcosmos.foldscope.com/";
+
+//helper functions
+var urlScraper = require('./scrapers/url-scraper');
 
 //port 3000
 var port = 3000;
@@ -34,56 +38,36 @@ app.use(express.static('public'));
 app.get('/', function(req,res){
     console.log("Started");
     console.log("Production Port" + process.env.PORT);
-    // //make a request to web page to scrape
-    var newsFeed = {};
-    request(url, function(error, response, body){
+    //make a request to web page to scrape
+    //This will give the titile, author, category, date, wpURL, and main header image url
+    // var newsFeed = urlScraper(url,res);
+    // console.log(newsFeed);
+    request(groupURL, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
             var blogText = $.text();
             var blogHTML = $.html();
 
-            //Title
-            var title = $('h1.entry-title').text().trim();
-            console.log("The title is")
-            console.log(title);
-
-            //Author
-            var author = $('span.author').text();
-
-            //Date
-            var date = $('time.entry-date').text();
-
-            //Category
-            var category = $("[rel='category']").text();
-
-            //url
-            var wordPressURL = url;
-
             //main header image
-            var headerImageURL = $('div.entry-media-thumb').css('background-image');
-            headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
-
-            console.log("Page scraped successfully");
-            console.log();
-            console.log("The url is " + url);
-            console.log(headerImageURL);
-            // console.log(blogText);
+            // var allURL = $('.link-more').find('a').attr('href');
+            var re = /ab+c/;
+            var allURL = $('a').each(function(){
+                console.log($(this).attr('href'));
+            })
+            // var allURL = $('div.entry-inner');
+            // headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+            // newsFeed = {
+            //     title: title,
+            //     author: author,
+            //     date: date,
+            //     category: category,
+            //     wordPressURL: wordPressURL,
+            //     headerImageURL: headerImageURL
+            // }
+            // console.log(allURL);
             // console.log(blogHTML);
-            // console.log(title);
-            // console.log(author);
-            // console.log(date);
-            // console.log(category);
-            newsFeed = {
-                title: title,
-                author: author,
-                date: date,
-                category: category,
-                wordPressURL: wordPressURL,
-                headerImageURL: headerImageURL
-            }
-            res.json(newsFeed);
-            console.log(newsFeed);
-            // res.render('layouts/main', {blog: blogText});
+            // res.json(newsFeed);
+            // return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }
@@ -93,7 +77,6 @@ app.get('/', function(req,res){
 app.post('/', function(req,res){
     console.log("Post Success");
     // //make a request to web page to scrape
-    var newsFeed = {};
     request(url, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
@@ -120,17 +103,6 @@ app.post('/', function(req,res){
             //main header image
             var headerImageURL = $('div.entry-media-thumb').css('background-image');
             headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
-
-            console.log("Page scraped successfully");
-            console.log();
-            console.log("The url is " + url);
-            console.log(headerImageURL);
-            // console.log(blogText);
-            // console.log(blogHTML);
-            // console.log(title);
-            // console.log(author);
-            // console.log(date);
-            // console.log(category);
             newsFeed = {
                 title: title,
                 author: author,
@@ -149,51 +121,6 @@ app.post('/', function(req,res){
     console.log(newsFeed);
     // res.json(newsFeed);
 });
-
-// //make a request to web page to scrape
-// function requestWebPage() {
-//     request(url, function(error, response, body){
-//         if (!error){
-//             var $ = cheerio.load(body);
-//             var blogText = $.text();
-//             var blogHTML = $.html();
-//
-//             //Title
-//             var title = $('h1.entry-title').text();
-//
-//             //Author
-//             var author = $('span.author').text();
-//
-//             //Date
-//             var date = $('time.entry-date').text();
-//
-//             //Category
-//             var category = $("[rel='category']").text();
-//
-//
-//             console.log("Page scraped successfully");
-//             console.log();
-//             // console.log(blogText);
-//             // console.log(blogHTML);
-//             console.log(title);
-//             console.log(author);
-//             console.log(date);
-//             console.log(category);
-//             var newsFeed = {
-//                 title: title,
-//                 author: author,
-//                 date: date,
-//                 category: category
-//             }
-//             console.log(newsFeed)
-//             // res.render('layouts/main', {blog: blogText});
-//         }else{
-//             console.log("An error occurred with scraping");
-//         }
-//     })
-// };
-//
-// requestWebPage();
 
 
 // Deploy
