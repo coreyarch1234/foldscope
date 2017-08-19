@@ -5,10 +5,12 @@
 var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
+allURLSData = []
 
-
-module.exports = function(url, res) {
+module.exports = function(url) {
     // //make a request to web page to scrape
+    console.log("data added")
+    console.log(allURLSData)
     request(url, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
@@ -35,7 +37,7 @@ module.exports = function(url, res) {
             //main header image
             var headerImageURL = $('div.entry-media-thumb').css('background-image');
             headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
-         
+
 
             newsFeed = {
                 title: title,
@@ -45,7 +47,9 @@ module.exports = function(url, res) {
                 wordPressURL: wordPressURL,
                 headerImageURL: headerImageURL
             }
-            res.json(newsFeed);
+            allURLSData.push(newsFeed);
+            // res.json(newsFeed);
+            console.log(newsFeed)
             return newsFeed;
         }else{
             console.log("An error occurred with scraping");

@@ -6,45 +6,42 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
 
+var urlScraper = require('../scrapers/url-scraper');
 
 module.exports = function(url, res) {
     // //make a request to web page to scrape
     request(url, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
-            var blogText = $.text();
-            var blogHTML = $.html();
-
-            //Title
-            var title = $('h1.entry-title').text().trim();
-            console.log("The title is")
-            console.log(title);
-
-            //Author
-            var author = $('span.author').text();
-
-            //Date
-            var date = $('time.entry-date').text();
-
-            //Category
-            var category = $("[rel='category']").text();
-
-            //url
-            var wordPressURL = url;
-
-            //main header image
-            var headerImageURL = $('div.entry-media-thumb').css('background-image');
-            headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
+            //find all urls
+            var wordPressURLSet = url;
+            // console.log(wordPressURLSet);
+            var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
+            var link = "";
+            var arrayURLS = [];
+            var allURL = $('a').each(function(){
+                link = $(this).attr('href');
+                if (wordPressURLReg.test(link)){
+                    if (link.indexOf("#") !=-1) {
+                        // console.log("this is a comment and should not be included");
+                    }else{
+                        // console.log(link);
+                        arrayURLS.push(link);
+                    }
+                }
+            });
             newsFeed = {
-                title: title,
-                author: author,
-                date: date,
-                category: category,
-                wordPressURL: wordPressURL,
-                headerImageURL: headerImageURL
+                arrayURLS: arrayURLS
             }
-            res.json(newsFeed);
-            return newsFeed;
+            urlScraper(arrayURLS[10]);
+            urlScraper(arrayURLS[12]);
+            urlScraper(arrayURLS[18]);
+            urlScraper(arrayURLS[19]);
+            // res.json(newsFeed);
+            // console.log(newsFeed);
+            // var newsFeedOne = urlScraper(arrayURLS[10]);
+            // console.log(newsFeedOne);
+            // return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }

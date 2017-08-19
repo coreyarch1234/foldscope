@@ -18,6 +18,9 @@ var groupURL = "https://microcosmos.foldscope.com/";
 
 //helper functions
 var urlScraper = require('./scrapers/url-scraper');
+var postInfoScraper = require('./scrapers/post-info-scraper');
+
+var newsFeed = {}
 
 //port 3000
 var port = 3000;
@@ -40,47 +43,58 @@ app.get('/', function(req,res){
     console.log("Production Port" + process.env.PORT);
     //make a request to web page to scrape
     //This will give the titile, author, category, date, wpURL, and main header image url
-    var newsFeed = urlScraper(url,res);
-    console.log(newsFeed);
-    request(groupURL, function(error, response, body){
-        if (!error){
-            var $ = cheerio.load(body);
-            var blogText = $.text();
-            var blogHTML = $.html();
+    // var newsFeed = urlScraper(url,res);
+    let scrapeAllURLS = function(){
+        return new Promise(function(resolve, reject){
+            postInfoScraper(groupURL, res);
+            resolve("this promise is done");
+        });
+    };
+    scrapeAllURLS().then(function(result){
+        console.log(result);
 
-            //main header image
-            var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
-            var link = "";
-            var arrLink = [];
-            var allURL = $('a').each(function(){
-                link = $(this).attr('href');
-                if (wordPressURLReg.test(link)){
-                    if (link.indexOf("#") !=-1) {
-                        console.log("this is a comment and should not be included");
-                    }else{
-                        arrLink.push(link);
-                    }
-                }
-            });
-            console.log("list of links");
-            console.log(arrLink);
-            newsFeed = {
-                title: title,
-                author: author,
-                date: date,
-                category: category,
-                wordPressURL: wordPressURL,
-                headerImageURL: headerImageURL
-            }
-            console.log(allURL);
-            console.log(blogHTML);
-            res.json(newsFeed);
-            return newsFeed;
-        }else{
-            console.log("An error occurred with scraping");
-        }
     });
+    // var newsFeed = postInfoScraper(groupURL, res)
+    // request(groupURL, function(error, response, body){
+    //     if (!error){
+    //         var $ = cheerio.load(body);
+    //         var blogText = $.text();
+    //         var blogHTML = $.html();
+    //
+    //         //main header image
+    //         var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
+    //         var link = "";
+    //         var arrLink = [];
+    //         var allURL = $('a').each(function(){
+    //             link = $(this).attr('href');
+    //             if (wordPressURLReg.test(link)){
+    //                 if (link.indexOf("#") !=-1) {
+    //                     console.log("this is a comment and should not be included");
+    //                 }else{
+    //                     arrLink.push(link);
+    //                 }
+    //             }
+    //         });
+    //         console.log("list of links");
+    //         console.log(arrLink);
+    //         newsFeed = {
+    //             title: title,
+    //             author: author,
+    //             date: date,
+    //             category: category,
+    //             wordPressURL: wordPressURL,
+    //             headerImageURL: headerImageURL
+    //         }
+    //         console.log(allURL);
+    //         console.log(blogHTML);
+    //         res.json(newsFeed);
+    //         return newsFeed;
+    //     }else{
+    //         console.log("An error occurred with scraping");
+    //     }
+    // });
 });
+
 //route to handle iOS post request
 app.post('/', function(req,res){
     console.log("Post Success");
