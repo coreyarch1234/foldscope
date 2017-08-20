@@ -12,16 +12,11 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
 
-// //web page to scrape
-// var url = "https://microcosmos.foldscope.com/?p=26017";
-// var groupURL = "https://microcosmos.foldscope.com/";
-//
-// var newsFeed = {}
-// var allJSONInfo = []
-// var arrayURLS = [];
-// var allFeed = []
 var port = 3000;
 
+// Setting up Database
+var mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/foldscope');
 
 //body parser
 app.use(bodyParser.json());
