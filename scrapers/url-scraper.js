@@ -9,8 +9,9 @@ allURLSData = []
 
 module.exports = function(url) {
     // //make a request to web page to scrape
-    console.log("data added")
-    console.log(allURLSData)
+    console.log("data added");
+    console.log(allURLSData);
+    //will take in an array of URLs and will scrape each one
     request(url, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);

@@ -8,7 +8,7 @@ cheerio = require("cheerio");
 
 var urlScraper = require('../scrapers/url-scraper');
 
-module.exports = function(url, res) {
+module.exports = function(url) {
     // //make a request to web page to scrape
     request(url, function(error, response, body){
         if (!error){
@@ -33,15 +33,15 @@ module.exports = function(url, res) {
             newsFeed = {
                 arrayURLS: arrayURLS
             }
-            urlScraper(arrayURLS[10]);
-            urlScraper(arrayURLS[12]);
-            urlScraper(arrayURLS[18]);
-            urlScraper(arrayURLS[19]);
+            // urlScraper(arrayURLS[10]);
+            // urlScraper(arrayURLS[12]);
+            // urlScraper(arrayURLS[18]);
+            // urlScraper(arrayURLS[19]);
             // res.json(newsFeed);
             // console.log(newsFeed);
             // var newsFeedOne = urlScraper(arrayURLS[10]);
             // console.log(newsFeedOne);
-            // return newsFeed;
+            return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }
