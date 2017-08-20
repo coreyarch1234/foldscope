@@ -70,9 +70,6 @@ function getJSONInfo(url){
                 var headerImageURL = $('div.entry-media-thumb').css('background-image');
                 headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
             }else if ($('div.site-banner-thumbnail').length > 0){
-                var headerImageURL = $('div.site-banner-thumbnail').css('background-image');
-                console.log("Header image URL");
-                console.log(headerImageURL);
                 var headerImageURL = "No image available";
             }else {
                 var headerImageURL = "No image available";
@@ -93,7 +90,9 @@ function getJSONInfo(url){
     });
 }
 function postScrape(url) {
+    // console.log("got to post scrape method");
     request(url, function(error, response, body){
+        console.log("got to post scrape method");
         if (!error){
             var $ = cheerio.load(body);
             //find all urls
@@ -101,7 +100,8 @@ function postScrape(url) {
             // console.log(wordPressURLSet);
             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
             var link = "";
-            var arrayURLS = [];
+            // var arrayURLS = [];
+            // console.log("got to post scrape method");
             var allURL = $('a').each(function(){
                 link = $(this).attr('href');
                 if (wordPressURLReg.test(link)){
@@ -116,14 +116,20 @@ function postScrape(url) {
             newsFeed = {
                 arrayURLS: arrayURLS
             }
+            // console.log("arrayURLS");
+            // console.log(arrayURLS);
+            // console.log("newsFeed");
+            // console.log(newsFeed);
             allFeed.push(newsFeed);
+            // console.log("allFeed");
+            // console.log(allFeed);
             return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }
     });
 }
-postScrape(groupURL);
+// postScrape(groupURL);
 app.get('/', function(req,res){
     console.log("Started");
     console.log("Production Port" + process.env.PORT);
@@ -132,13 +138,19 @@ app.get('/', function(req,res){
             y = 0;
             var requestLoopGroup = setInterval(function(){
                 if (y == 1){
+                    console.log("resolving and y is: " + y);
+                    // console.log("allFeed");
+                    // console.log(allFeed);
                     resolve(allFeed);
                     clearInterval(requestLoopGroup);
                 }else{
+                    console.log("about to post scrape");
                     postScrape(groupURL);
+                    // console.log("allFeed");
+                    // console.log(allFeed);
                 }
                 y++;
-          }, 1000);
+          }, 5000);
         })
     }
     let createIndividual = function(feed){
@@ -153,36 +165,52 @@ app.get('/', function(req,res){
             var requestLoop = setInterval(function(){
                 if (i == feed.length){
                     console.log(allJSONInfo)
-                    res.json(allJSONInfo)
+                    //convert to json
+                    finalJSON = {};
+                    for (i=0; i<allJSONInfo.length; i++){
+                        finalJSON[i] = allJSONInfo[i];
+                    }
+                    console.log("finalJSON ---------");
+                    console.log(finalJSON)
+                    res.json(finalJSON)
                     clearInterval(requestLoop);
                 }else{
                     getJSONInfo(feed[i]);
                 }
                 i++;
-          }, 2000);
+          }, 3000);
         })
     }
 
     createGroup().then(function(result){
-
+        console.log("allFeed object:");
+        console.log(allFeed);
         createIndividual(allFeed[0].arrayURLS);
     })
 });
 
 //route to handle iOS post request
 app.post('/', function(req,res){
+    console.log("Started");
+    console.log("Production Port" + process.env.PORT);
     let createGroup = function(){
         return new Promise(function(resolve, reject){
             y = 0;
             var requestLoopGroup = setInterval(function(){
                 if (y == 1){
+                    console.log("resolving and y is: " + y);
+                    // console.log("allFeed");
+                    // console.log(allFeed);
                     resolve(allFeed);
                     clearInterval(requestLoopGroup);
                 }else{
+                    console.log("about to post scrape");
                     postScrape(groupURL);
+                    // console.log("allFeed");
+                    // console.log(allFeed);
                 }
                 y++;
-          }, 1000);
+          }, 5000);
         })
     }
     let createIndividual = function(feed){
@@ -197,18 +225,26 @@ app.post('/', function(req,res){
             var requestLoop = setInterval(function(){
                 if (i == feed.length){
                     console.log(allJSONInfo)
-                    res.json(allJSONInfo)
+                    //convert to json
+                    finalJSON = {};
+                    for (i=0; i<allJSONInfo.length; i++){
+                        finalJSON[i] = allJSONInfo[i];
+                    }
+                    console.log("finalJSON ---------");
+                    console.log(finalJSON)
+                    res.json(finalJSON)
                     clearInterval(requestLoop);
                 }else{
                     getJSONInfo(feed[i]);
                 }
                 i++;
-          }, 2000);
+          }, 3000);
         })
     }
 
     createGroup().then(function(result){
-
+        console.log("allFeed object:");
+        console.log(allFeed);
         createIndividual(allFeed[0].arrayURLS);
     })
 });
