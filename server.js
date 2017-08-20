@@ -168,7 +168,8 @@ app.get('/', function(req,res){
                     //convert to json
                     finalJSON = {};
                     for (i=0; i<allJSONInfo.length; i++){
-                        finalJSON[i] = allJSONInfo[i];
+                        var index = i.toString();
+                        finalJSON[index] = allJSONInfo[i];
                     }
                     console.log("finalJSON ---------");
                     console.log(finalJSON)
