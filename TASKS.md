@@ -8,3 +8,20 @@ For scrapers:
 3) In controller file
     a) Have a basic post route, where a function loops through every URL that the first function returns and pass those URLs into the second function to get the essential JSON info.
     b) Appends each returned JSON into an array that you will send as a response
+
+Post Model WP:
+
+0) Convert scraping routes to functions to put them in a new file. Call them in server with URLs.
+
+1) Create post model with:
+    a) Title - String
+    b) Author - String
+    c) Category - String
+    d) Date - String
+    e) PostURL - String (="None" for user posts)
+    f) ImageURL - String (="None" for user posts)
+    g) isWP - Boolean (= True for wordpress posts and False for user posts)
+
+2) Go to scraping functions and loop through array to populate Post Model with each post
+
+3) Create post route for iOS request. Query Post model and return posts in json

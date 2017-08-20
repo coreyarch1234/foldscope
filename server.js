@@ -16,20 +16,10 @@ cheerio = require("cheerio");
 var url = "https://microcosmos.foldscope.com/?p=26017";
 var groupURL = "https://microcosmos.foldscope.com/";
 
-//phantom
-var phantom = require("phantom");
-
-//helper functions
-var urlScraper = require('./scrapers/url-scraper');
-var postInfoScraper = require('./scrapers/post-info-scraper');
-
-
 var newsFeed = {}
-var newsFeedTest = {}
 var allJSONInfo = []
 var arrayURLS = [];
 var allFeed = []
-//port 3000
 var port = 3000;
 
 
@@ -55,16 +45,12 @@ function getJSONInfo(url){
             var title = $('h1.entry-title').text().trim();
             //Author
             var author = $('span.author').text();
-
             //Date
             var date = $('time.entry-date').text();
-
             //Category
             var category = $("[rel='category']").text();
-
             //url
             var wordPressURL = url;
-
             //main header image
             if ($('div.entry-media-thumb').length > 0){
                 var headerImageURL = $('div.entry-media-thumb').css('background-image');
@@ -74,6 +60,7 @@ function getJSONInfo(url){
             }else {
                 var headerImageURL = "No image available";
             }
+
             newsFeed = {
                 title: title,
                 author: author,
@@ -90,18 +77,14 @@ function getJSONInfo(url){
     });
 }
 function postScrape(url) {
-    // console.log("got to post scrape method");
     request(url, function(error, response, body){
         console.log("got to post scrape method");
         if (!error){
             var $ = cheerio.load(body);
             //find all urls
             var wordPressURLSet = url;
-            // console.log(wordPressURLSet);
             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
             var link = "";
-            // var arrayURLS = [];
-            // console.log("got to post scrape method");
             var allURL = $('a').each(function(){
                 link = $(this).attr('href');
                 if (wordPressURLReg.test(link)){
@@ -116,20 +99,13 @@ function postScrape(url) {
             newsFeed = {
                 arrayURLS: arrayURLS
             }
-            // console.log("arrayURLS");
-            // console.log(arrayURLS);
-            // console.log("newsFeed");
-            // console.log(newsFeed);
             allFeed.push(newsFeed);
-            // console.log("allFeed");
-            // console.log(allFeed);
             return newsFeed;
         }else{
             console.log("An error occurred with scraping");
         }
     });
 }
-// postScrape(groupURL);
 app.get('/', function(req,res){
     console.log("Started");
     console.log("Production Port" + process.env.PORT);
@@ -139,15 +115,11 @@ app.get('/', function(req,res){
             var requestLoopGroup = setInterval(function(){
                 if (y == 1){
                     console.log("resolving and y is: " + y);
-                    // console.log("allFeed");
-                    // console.log(allFeed);
                     resolve(allFeed);
                     clearInterval(requestLoopGroup);
                 }else{
                     console.log("about to post scrape");
                     postScrape(groupURL);
-                    // console.log("allFeed");
-                    // console.log(allFeed);
                 }
                 y++;
           }, 5000);
@@ -200,15 +172,11 @@ app.post('/', function(req,res){
             var requestLoopGroup = setInterval(function(){
                 if (y == 1){
                     console.log("resolving and y is: " + y);
-                    // console.log("allFeed");
-                    // console.log(allFeed);
                     resolve(allFeed);
                     clearInterval(requestLoopGroup);
                 }else{
                     console.log("about to post scrape");
                     postScrape(groupURL);
-                    // console.log("allFeed");
-                    // console.log(allFeed);
                 }
                 y++;
           }, 5000);
@@ -249,7 +217,6 @@ app.post('/', function(req,res){
         createIndividual(allFeed[0].arrayURLS);
     })
 });
-
 
 // Deploy
 app.listen(process.env.PORT || port, function() {
