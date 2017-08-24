@@ -103,7 +103,7 @@ module.exports = function(res){
                     postScrape(groupURL);
                 }
                 y++;
-          }, 3000);
+          }, 5000);
         })
     }
     let createIndividual = function(feed){
