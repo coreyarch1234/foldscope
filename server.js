@@ -37,7 +37,7 @@ var scrapeFeed = require('./scrapers/scrape.js');
 // scrapeFeed();
 
 app.get('/', function(req,res){
-    var postData = { title: 'Foldscope in the field',
+    var postData = [{ title: 'Foldscope in the field',
     author: 'Manu Prakash',
     date: 'August 23, 2017',
     category: 'Uncategorized',
@@ -246,7 +246,7 @@ app.get('/', function(req,res){
     category: 'Uncategorized',
     postURL: 'https://microcosmos.foldscope.com/?p=26187',
     imageURL: 'https://i1.wp.com/microcosmos.foldscope.com/wp-content/uploads/2017/06/magic.jpg?resize=960%2C640&ssl=1',
-    isWP: true };
+    isWP: true }];
     db.collection("posts").insertOne(postData, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to create new contact.");
@@ -254,7 +254,6 @@ app.get('/', function(req,res){
       res.status(201).json(doc.ops);
     }
   });
-  // scrapeFeed(res);
 });
 
 //route to handle iOS post request
