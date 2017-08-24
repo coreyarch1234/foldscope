@@ -37,6 +37,13 @@ var scrapeFeed = require('./scrapers/scrape.js');
 // scrapeFeed();
 
 app.get('/', function(req,res){
+    res.json({ title: 'Foldscope in the field',
+    author: 'Manu Prakash',
+    date: 'August 23, 2017',
+    category: 'Uncategorized',
+    postURL: 'https://microcosmos.foldscope.com/?p=26651',
+    imageURL: 'No image available',
+    isWP: true });
 });
 
 //route to handle iOS post request
