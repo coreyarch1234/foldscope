@@ -14,9 +14,10 @@ cheerio = require("cheerio");
 
 var port = 3000;
 
+var mongodb = require("mongodb");
 // Setting up Database
 var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/foldscope');
+// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/foldscope', { useMongoClient: true });
 
 //body parser
 app.use(bodyParser.json());
@@ -42,8 +43,36 @@ app.get('/', function(req,res){
 app.post('/', function(req,res){
 });
 
-// Deploy
-app.listen(process.env.PORT || port, function() {
-    // console.log(process.env.PORT);
-    console.log("Started at: " + port);
-})
+var db;
+
+// Connect to the database before starting the application server.
+mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost/foldscope', function (err, database) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+
+  // Save database object from the callback for reuse.
+  db = database;
+  console.log("Database connection ready");
+
+  // Initialize the app.
+  // Deploy
+  app.listen(process.env.PORT || port, function() {
+      // console.log(process.env.PORT);
+      console.log("Started at: " + port);
+      //if mongodb has 0 WP posts, then populate with scrapeFeed.
+      //if not, then do nothing.
+
+  })
+});
+
+
+// // Deploy
+// app.listen(process.env.PORT || port, function() {
+//     // console.log(process.env.PORT);
+//     console.log("Started at: " + port);
+//     //if mongodb has 0 WP posts, then populate with scrapeFeed.
+//     //if not, then do nothing.
+//
+// })

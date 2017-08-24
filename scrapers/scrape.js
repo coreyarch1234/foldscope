@@ -3,6 +3,9 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
 
+//Post Model
+var Post = require('../models/post/post');
+
 //web page to scrape
 var url = "https://microcosmos.foldscope.com/?p=26017";
 var groupURL = "https://microcosmos.foldscope.com/";
@@ -44,8 +47,9 @@ function getJSONInfo(url){
                 author: author,
                 date: date,
                 category: category,
-                wordPressURL: wordPressURL,
-                headerImageURL: headerImageURL
+                postURL: wordPressURL,
+                imageURL: headerImageURL,
+                isWP: true
             }
             allJSONInfo.push(newsFeed);
             return newsFeed;
@@ -91,7 +95,7 @@ module.exports = function(){
             y = 0;
             var requestLoopGroup = setInterval(function(){
                 if (y == 1){
-                    console.log("resolving and y is: " + y);
+                    // console.log("resolving and y is: " + y);
                     resolve(allFeed);
                     clearInterval(requestLoopGroup);
                 }else{
@@ -105,25 +109,24 @@ module.exports = function(){
     let createIndividual = function(feed){
         return new Promise(function(resolve, reject){
             var i = 0;
-            console.log(allJSONInfo)
+            // console.log(allJSONInfo)
             feed = feed.filter(function(elem, pos) {
                 return feed.indexOf(elem) == pos;
             })
-            console.log(feed);
-            console.log(feed.length);
+            // console.log(feed);
+            // console.log(feed.length);
             var requestLoop = setInterval(function(){
                 if (i == feed.length){
                     console.log(allJSONInfo)
                     //convert to json
-                    finalJSON = {};
-                    for (i=0; i<allJSONInfo.length; i++){
-                        var index = i.toString();
-                        finalJSON[index] = allJSONInfo[i];
-                    }
-                    console.log("finalJSON ---------");
-                    console.log(finalJSON)
-                    // res.json(finalJSON);
-                    resolve(finalJSON);
+                    // finalJSON = {};
+                    // for (i=0; i<allJSONInfo.length; i++){
+                    //     var key = allJSONInfo[i].title;
+                    //     finalJSON[key] = allJSONInfo[i];
+                    // }
+                    // console.log("finalJSON ---------");
+                    // console.log(finalJSON)
+                    resolve(allJSONInfo);
                     clearInterval(requestLoop);
                 }else{
                     getJSONInfo(feed[i]);
@@ -133,11 +136,26 @@ module.exports = function(){
         })
     }
 
+    //This will be on a timer per month
     createGroup().then(function(result){
-        console.log("allFeed object:");
-        console.log(allFeed);
-        createIndividual(allFeed[0].arrayURLS).then(function(finalJSON){
-            return finalJSON
+        createIndividual(allFeed[0].arrayURLS).then(function(postData){
+            //Check how many WP posts to determine whether to populate
+            Post.count({isWP: true}, function(err, count){
+                console.log("the count is: " + count);
+                if (count > 0){
+                    console.log("there is no need to save posts")
+                }else{
+                    // We want to populate Post model with an array of json posts
+                    Post.create(postData, function(err, results){
+                        if (err) {
+                            console.log("there was an error saving to post model");
+                        }else{
+                            console.log("posts created and save successfully");
+                            console.log(results);
+                        }
+                    })
+                }
+            })
         })
     })
 }

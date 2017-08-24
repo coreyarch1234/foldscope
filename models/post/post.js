@@ -9,7 +9,9 @@ var PostSchema = new Schema({
   category             : { type: String, unique: false, required: true },
   date                 : { type: String, unique: false, required: true },
   postURL              : { type: String, unique: false, required: false },
-  imageURL             : { type: String, unique: false, required: false }
+  imageURL             : { type: String, unique: false, required: false },
+  isWP                 : { type: Boolean, unique: false, required: true }
+
 });
 
 module.exports = mongoose.model('Post', PostSchema);
