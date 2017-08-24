@@ -50,6 +50,7 @@ app.get('/', function(req,res){
   //     res.status(201).json(doc.ops[0]);
   //   }
   // });
+  scrapeFeed(res);
 });
 
 //route to handle iOS post request
