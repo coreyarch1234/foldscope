@@ -103,7 +103,7 @@ module.exports = function(){
                     postScrape(groupURL);
                 }
                 y++;
-          }, 5000);
+          }, 3000);
         })
     }
     let createIndividual = function(feed){
@@ -140,22 +140,29 @@ module.exports = function(){
     createGroup().then(function(result){
         createIndividual(allFeed[0].arrayURLS).then(function(postData){
             //Check how many WP posts to determine whether to populate
-            Post.count({isWP: true}, function(err, count){
-                console.log("the count is: " + count);
-                if (count > 0){
-                    console.log("there is no need to save posts")
-                }else{
-                    // We want to populate Post model with an array of json posts
-                    Post.create(postData, function(err, results){
-                        if (err) {
-                            console.log("there was an error saving to post model");
-                        }else{
-                            console.log("posts created and save successfully");
-                            console.log(results);
-                        }
-                    })
-                }
-            })
+            // Post.count({isWP: true}, function(err, count){
+            //     console.log("the count is: " + count);
+            //     if (count > 0){
+            //         console.log("there is no need to save posts")
+            //     }else{
+            //         // We want to populate Post model with an array of json posts
+            //         Post.create(postData, function(err, results){
+            //             if (err) {
+            //                 console.log("there was an error saving to post model");
+            //             }else{
+            //                 console.log("posts created and save successfully");
+            //                 console.log(results);
+            //             }
+            //         })
+            //     }
+            // })
+            db.collection("posts").insertOne(postData, function(err, doc) {
+            if (err) {
+              handleError(res, err.message, "Failed to create new contact.");
+            } else {
+              res.status(201).json(doc.ops[0]);
+            }
+          });
         })
     })
 }

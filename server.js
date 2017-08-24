@@ -37,19 +37,19 @@ var scrapeFeed = require('./scrapers/scrape.js');
 // scrapeFeed();
 
 app.get('/', function(req,res){
-    db.collection("posts").insertOne({ title: 'Our Latex experiments',
-    author: 'laksiyer',
-    date: 'July 4, 2017',
-    category: 'BiologyMaterialsNature',
-    postURL: 'https://microcosmos.foldscope.com/?p=26210',
-    imageURL: 'https://i2.wp.com/microcosmos.foldscope.com/wp-content/uploads/2017/07/IMG_20170627_230404.jpg?resize=960%2C640&ssl=1',
-    isWP: true }, function(err, doc) {
-    if (err) {
-      handleError(res, err.message, "Failed to create new contact.");
-    } else {
-      res.status(201).json(doc.ops[0]);
-    }
-  });
+  //   db.collection("posts").insertOne({ title: 'Our Latex experiments',
+  //   author: 'laksiyer',
+  //   date: 'July 4, 2017',
+  //   category: 'BiologyMaterialsNature',
+  //   postURL: 'https://microcosmos.foldscope.com/?p=26210',
+  //   imageURL: 'https://i2.wp.com/microcosmos.foldscope.com/wp-content/uploads/2017/07/IMG_20170627_230404.jpg?resize=960%2C640&ssl=1',
+  //   isWP: true }, function(err, doc) {
+  //   if (err) {
+  //     handleError(res, err.message, "Failed to create new contact.");
+  //   } else {
+  //     res.status(201).json(doc.ops[0]);
+  //   }
+  // });
 });
 
 //route to handle iOS post request
