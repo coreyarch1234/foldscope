@@ -90,7 +90,7 @@ function something(callback){
 
 function jsonInterval(feed){
     var i = 0;
-    db.dropDatabase();
+    // db.dropDatabase();
     var requestLoop = setInterval(function(){
         if (i == feed[0].newarr.length){
             // db.collection("posts").count({isWP: true}, function(err, count){
@@ -125,7 +125,7 @@ function getPosts(){
     var feed = allFeed[0].arrayURLS
       var newarr = (function(feed){
       var m = {}, newarr = []
-      for (var i=0; i<feed.length / 4; i++) {
+      for (var i=0; i<feed.length; i++) {
         var v = feed[i];
         if (!m[v]) {
           newarr.push(v);
@@ -135,7 +135,13 @@ function getPosts(){
       return newarr;
   })(feed);
     allJSONInfo = [{newarr}]
-    jsonInterval(allJSONInfo);
+    db.collection("posts").count({isWP: true}, function(err, count){
+        console.log("here is the count: " + count);
+        if (count == 0){
+            jsonInterval(allJSONInfo);
+        }
+    })
+    // jsonInterval(allJSONInfo);
 }
 app.get('/', function(req,res){
   db.collection("posts").find({isWP: true}).toArray(function(err, docs){
