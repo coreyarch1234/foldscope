@@ -93,15 +93,14 @@ function jsonInterval(feed){
     db.dropDatabase();
     var requestLoop = setInterval(function(){
         if (i == feed[0].newarr.length){
-            db.collection("posts").count({isWP: true}, function(err, count){
-                console.log("here is the count: " + count);
-            })
-            console.log("here are all of the posts: ")
-            db.collection("posts").find({isWP: true}, function(err, docs){
-                docs.forEach(function(doc){
-                    console.log( doc.title + " by " + doc.author);
-                });
-            })
+            // db.collection("posts").count({isWP: true}, function(err, count){
+            //     console.log("here is the count: " + count);
+            // })
+            // console.log("here are all of the posts: ")
+            // db.collection("posts").find({isWP: true}).toArray(function(err, docs){
+            //     if (err) throw error;
+            //     res.send(docs)
+            // })
             clearInterval(requestLoop);
         }else{
             getJSONInfo(feed[0].newarr[i]);
@@ -112,94 +111,17 @@ function jsonInterval(feed){
         if (i >= 1){
             db.collection("posts").insertOne(allJSONInfo[allJSONInfo.length - 1], function(err, doc) {
                 if (err) {
-                    // handleError(res, err.message, "Failed to create new contact.");
                     console.log(err);
                 } else {
                     console.log("saved successfully");
-                    // console.log(allJSONInfo);
-                    // getJSONInfo(doc.ops[5], res)
-                    // console.log((doc.ops)[0].arrayURLS[5])
-                    // console.log(doc.ops[0])
-                    // res.status(201).json(doc.ops);
-                    // getJSONInfo((doc.ops)[0].arrayURLS[5], res);
-                    // res.status(201).json((doc.ops)[0].arrayURLS[5]);
 
                 }
             });
         }
-
-        // if (allJSONInfo.length > 0){
-        //     db.collection("posts").count({isWP: true}, function(err, count){
-        //
-        //         if (count > 0){
-        //             console.log("the count is: " + count);
-        //             db.collection("posts").insertMany(feed, function(err, doc) {
-        //                 if (err) {
-        //                     // handleError(res, err.message, "Failed to create new contact.");
-        //                     console.log(err);
-        //                 } else {
-        //                     console.log("saved successfully");
-        //                     console.log(allJSONInfo);
-        //                     // getJSONInfo(doc.ops[5], res)
-        //                     // console.log((doc.ops)[0].arrayURLS[5])
-        //                     // console.log(doc.ops[0])
-        //                     // res.status(201).json(doc.ops);
-        //                     // getJSONInfo((doc.ops)[0].arrayURLS[5], res);
-        //                     // res.status(201).json((doc.ops)[0].arrayURLS[5]);
-        //
-        //                 }
-        //             });
-        //         }
-        //     })
-        // }
-        // db.collection("posts").count({isWP: true}, function(err, count){
-        //
-        //     if (count > 0){
-        //         console.log("the count is: " + count);
-        //         db.collection("posts").insertMany(allJSONInfo, function(err, doc) {
-        //             if (err) {
-        //                 // handleError(res, err.message, "Failed to create new contact.");
-        //                 console.log(err);
-        //             } else {
-        //                 console.log("saved successfully");
-        //                 console.log(allJSONInfo);
-        //                 // getJSONInfo(doc.ops[5], res)
-        //                 // console.log((doc.ops)[0].arrayURLS[5])
-        //                 // console.log(doc.ops[0])
-        //                 // res.status(201).json(doc.ops);
-        //                 // getJSONInfo((doc.ops)[0].arrayURLS[5], res);
-        //                 // res.status(201).json((doc.ops)[0].arrayURLS[5]);
-        //
-        //             }
-        //         });
-        //     }else{
-        //         db.collection("posts").insertOne(allJSONInfo[0], function(err, doc) {
-        //             if (err) {
-        //                 // handleError(res, err.message, "Failed to create new contact.");
-        //                 console.log(err);
-        //             } else {
-        //                 console.log("saved successfully");
-        //                 console.log(allJSONInfo);
-        //                 // getJSONInfo(doc.ops[5], res)
-        //                 // console.log((doc.ops)[0].arrayURLS[5])
-        //                 // console.log(doc.ops[0])
-        //                 // res.status(201).json(doc.ops);
-        //                 // getJSONInfo((doc.ops)[0].arrayURLS[5], res);
-        //                 // res.status(201).json((doc.ops)[0].arrayURLS[5]);
-        //
-        //             }
-        //         });
-        //     }
-        // })
         i++;
   }, 3000);
 }
-
-
-app.get('/', function(req,res){
-    // allFeed = allFeed.filter(function(elem, pos) {
-    //     return allFeed.indexOf(elem) == pos;
-    // })
+function getPosts(){
     var feed = allFeed[0].arrayURLS
       var newarr = (function(feed){
       var m = {}, newarr = []
@@ -212,119 +134,22 @@ app.get('/', function(req,res){
       }
       return newarr;
   })(feed);
-    // allFeed = newarr(allFeed);
-    // console.log("distinct feed");
-    // console.log([{newarr}])
     allJSONInfo = [{newarr}]
     jsonInterval(allJSONInfo);
-    // console.log(allJSONInfo);
-    // getJSONInfo(allFeed[0].arrayURLS[5], res);
-    // console.log("allJSON info inserted");
-    // console.log(allJSONInfo);
-    // if (allFeed[0].arrayURLS.length > 0){
-    //     console.log(allFeed[0].arrayURLS.length);
-    //     for (var i = 0; i < allFeed[0].arrayURLS.length / 2; i++){
-    //         getJSONInfo(allFeed[0].arrayURLS[i]);
-    //         console.log(allFeed[0].arrayURLS[i]);
-    //     }
-    //     console.log("allJSON info inserted");
-    //     console.log(allJSONInfo);
-    // }
-    // db.collection("posts").count({isWP: true}, function(err, count){
-    //     console.log("the count is: " + count);
-    // })
-    // db.collection("posts").insertMany(allFeed, function(err, doc) {
-    //     if (err) {
-    //         // handleError(res, err.message, "Failed to create new contact.");
-    //         console.log("error");
-    //     } else {
-    //         // getJSONInfo(doc.ops[5], res)
-    //         console.log((doc.ops)[0].arrayURLS[5])
-    //         // console.log(doc.ops[0])
-    //         res.status(201).json(doc.ops);
-    //         // getJSONInfo((doc.ops)[0].arrayURLS[5], res);
-    //         // res.status(201).json((doc.ops)[0].arrayURLS[5]);
-    //
-    //     }
-    // });
-    // res.json({ title: 'Foldscope in the field',
-    // author: 'Manu Prakash',
-    // date: 'August 23, 2017',
-    // category: 'Uncategorized',
-    // postURL: 'https://microcosmos.foldscope.com/?p=26651',
-    // imageURL: 'No image available',
-    // isWP: true });
-    // request(groupURL, function(error, response, body){
-    //     console.log("got to post scrape method");
-    //     if (!error){
-    //         var $ = cheerio.load(body);
-    //         //find all urls
-    //         var wordPressURLSet = groupURL;
-    //         var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
-    //         var link = "";
-    //         var allURL = $('a').each(function(){
-    //             link = $(this).attr('href');
-    //             if (wordPressURLReg.test(link)){
-    //                 if (link.indexOf("#") !=-1) {
-    //                     // console.log("this is a comment and should not be included");
-    //                 }else{
-    //                     // console.log(link);
-    //                     arrayURLS.push(link);
-    //                 }
-    //             }
-    //         });
-    //         newsFeed = {
-    //             arrayURLS: arrayURLS
-    //         }
-    //         allFeed.push(newsFeed);
-    //         console.log("allFeed is done");
-    //         isDone = true;
-    //         console.log(allFeed);
-    //         res.json(allFeed);
-    //         // return newsFeed;
-    //     }else{
-    //         console.log("An error occurred with scraping");
-    //     }
-    // });
+}
+app.get('/', function(req,res){
+  db.collection("posts").find({isWP: true}).toArray(function(err, docs){
+      if (err) throw error;
+      res.send(docs)
+  })
 });
 
 //route to handle iOS post request
 app.post('/', function(req,res){
-    var postData = [{ title: 'Foldscope in the field',
-    author: 'Manu Prakash',
-    date: 'August 23, 2017',
-    category: 'Uncategorized',
-    postURL: 'https://microcosmos.foldscope.com/?p=26651',
-    imageURL: 'No image available',
-    isWP: true },
-  { title: 'Harpaticoda and some mysterious things',
-    author: 'Mitali',
-    date: 'August 11, 2017',
-    category: 'BiologyEnvironmentNature',
-    postURL: 'https://microcosmos.foldscope.com/?p=26623',
-    imageURL: 'No image available',
-    isWP: true },
-  { title: 'It’s a tick! And it is tiny!',
-    author: 'tdumont',
-    date: 'August 7, 2017',
-    category: 'EnvironmentNature',
-    postURL: 'https://microcosmos.foldscope.com/?p=26588',
-    imageURL: 'https://i0.wp.com/microcosmos.foldscope.com/wp-content/uploads/2017/08/FullSizeRender.jpg?resize=960%2C640&ssl=1',
-    isWP: true },
-  { title: 'Summer Camp _ part 5',
-    author: 'Teni Anbarchian',
-    date: 'August 2, 2017',
-    category: 'Uncategorized',
-    postURL: 'https://microcosmos.foldscope.com/?p=26571',
-    imageURL: 'https://i2.wp.com/microcosmos.foldscope.com/wp-content/uploads/2017/08/IMG_9976.jpg?resize=288%2C480&ssl=1',
-    isWP: true }];
-    db.collection("posts").insertMany(postData, function(err, doc) {
-    if (err) {
-      handleError(res, err.message, "Failed to create new contact.");
-    } else {
-      res.status(201).json(doc.ops);
-    }
-  });
+    db.collection("posts").find({isWP: true}).toArray(function(err, docs){
+        if (err) throw error;
+        res.send(docs)
+    })
 });
 
 var db;
@@ -372,8 +197,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost/fold
               allFeed.push(newsFeed);
               console.log("allFeed is done");
               console.log(allFeed);
-            //   getJSONInfo(allFeed[0].arrayURLS[5]);
-            //   getJSONInfo(allFeed[0].arrayURLS[6]);
+              getPosts();
               return newsFeed;
           }else{
               console.log("An error occurred with scraping");
@@ -383,15 +207,4 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost/fold
       //if not, then do nothing.
 
   })
-
 });
-
-
-// // Deploy
-// app.listen(process.env.PORT || port, function() {
-//     // console.log(process.env.PORT);
-//     console.log("Started at: " + port);
-//     //if mongodb has 0 WP posts, then populate with scrapeFeed.
-//     //if not, then do nothing.
-//
-// })
