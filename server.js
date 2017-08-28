@@ -58,14 +58,8 @@ function getJSONInfo(url){
             //url
             var wordPressURL = url;
             //main header image
-            if ($('div.entry-media-thumb').length > 0){
-                var headerImageURL = $('div.entry-media-thumb').css('background-image');
-                headerImageURL = headerImageURL.replace(/.*\s?url\([\'\"]?/, '').replace(/[\'\"]?\).*/, '');
-            }else if ($('div.site-banner-thumbnail').length > 0){
-                var headerImageURL = "No image available";
-            }else {
-                var headerImageURL = "No image available";
-            }
+
+            var headerImageURL = $('meta[property="og:image"]').attr('content');
 
             newsFeed = {
                 title: title,
@@ -90,7 +84,7 @@ function something(callback){
 
 function jsonInterval(feed){
     var i = 0;
-    // db.dropDatabase();
+    db.dropDatabase();
     var requestLoop = setInterval(function(){
         if (i == feed[0].newarr.length){
             // db.collection("posts").count({isWP: true}, function(err, count){
@@ -141,7 +135,6 @@ function getPosts(){
             jsonInterval(allJSONInfo);
         }
     })
-    // jsonInterval(allJSONInfo);
 }
 app.get('/', function(req,res){
   db.collection("posts").find({isWP: true}).toArray(function(err, docs){
