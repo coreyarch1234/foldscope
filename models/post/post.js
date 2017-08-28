@@ -4,12 +4,12 @@ var Schema = mongoose.Schema;
 var PostSchema = new Schema({
   createdAt            : { type: Date, default: Date() },
   updatedAt            : { type: Date, default: Date() },
-  title                : { type: String, unique: false, required: true },
-  author               : { type: String, unique: false, required: true },
-  category             : { type: String, unique: false, required: true },
-  date                 : { type: String, unique: false, required: true },
-  postURL              : { type: String, unique: false, required: false },
-  imageURL             : { type: String, unique: false, required: false },
+  title                : { type: String, unique: true, required: true },
+  author               : { type: String, unique: true, required: true },
+  category             : { type: String, unique: true, required: true },
+  date                 : { type: String, unique: true, required: true },
+  postURL              : { type: String, unique: true, required: false },
+  imageURL             : { type: String, unique: true, required: false },
   isWP                 : { type: Boolean, unique: false, required: true }
 
 });

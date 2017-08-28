@@ -12,6 +12,18 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
 
+var _ = require('lodash');
+
+var _ = require('lodash/core');
+// Load the FP build for immutable auto-curried iteratee-first data-last methods.
+var fp = require('lodash/fp');
+
+var array = require('lodash/array');
+var object = require('lodash/fp/object');
+
+// var includes = require('lodash/collections/includes');
+
+
 var port = 3000;
 
 var mongodb = require("mongodb");
@@ -39,6 +51,9 @@ var newsFeed = {};
 var allJSONInfo = [];
 var arrayURLS = [];
 var allFeed = [];
+
+var global_count = 0;
+var urlArray = [];
 
 function getJSONInfo(url){
     request(url, function(error, response, body){
@@ -71,7 +86,6 @@ function getJSONInfo(url){
                 isWP: true
             }
             allJSONInfo.push(newsFeed);
-            // res.json(allJSONInfo);
             return newsFeed;
         }else{
             console.log("An error occurred with scraping");
@@ -84,17 +98,32 @@ function something(callback){
 
 function jsonInterval(feed){
     var i = 0;
-    db.dropDatabase();
+    //promises to ensure no duplicate posts
+    let urlArrayFill = function(){
+        return new Promise(function(resolve, reject){
+            db.collection("posts").find({isWP: true}).toArray(function(err, docs){
+                if (err) throw error;
+                if (global_count == 0){
+                    resolve([]);
+                }else{
+                    for (var i = 0; i < global_count; i++){
+                        console.log("global count is: " + global_count);
+                        console.log("i is: " + i);
+                        if (i == (global_count - 1)){
+                            console.log("array of urls");
+                            console.log(urlArray);
+                            resolve(urlArray)
+                        }
+                        if (urlArray.includes(docs[i].postURL) == false){
+                            urlArray.push(docs[i].postURL);
+                        }
+                    }
+                }
+            })
+        })
+    }
     var requestLoop = setInterval(function(){
         if (i == feed[0].newarr.length){
-            // db.collection("posts").count({isWP: true}, function(err, count){
-            //     console.log("here is the count: " + count);
-            // })
-            // console.log("here are all of the posts: ")
-            // db.collection("posts").find({isWP: true}).toArray(function(err, docs){
-            //     if (err) throw error;
-            //     res.send(docs)
-            // })
             clearInterval(requestLoop);
         }else{
             getJSONInfo(feed[0].newarr[i]);
@@ -103,14 +132,28 @@ function jsonInterval(feed){
         console.log(allJSONInfo);
         console.log();
         if (i >= 1){
-            db.collection("posts").insertOne(allJSONInfo[allJSONInfo.length - 1], function(err, doc) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("saved successfully");
+            urlArrayFill().then(function(result){
+                console.log("result is: ")
+                console.log(result)
+                db.collection("posts").find({isWP: true}).toArray(function(err, docs){
+                    if (err) throw error;
+                    if (result.includes(allJSONInfo[allJSONInfo.length - 1].postURL)){
+                        console.log("we have a duplicate");
+                    }else{
+                        console.log("we don't have a duplicate");
+                        db.collection("posts").insertOne(allJSONInfo[allJSONInfo.length - 1], function(err, doc) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                //update global count
+                                global_count ++;
+                                console.log("saved successfully");
 
-                }
-            });
+                            }
+                        });
+                    }
+                })
+            })
         }
         i++;
   }, 3000);
@@ -131,9 +174,8 @@ function getPosts(){
     allJSONInfo = [{newarr}]
     db.collection("posts").count({isWP: true}, function(err, count){
         console.log("here is the count: " + count);
-        if (count == 0){
-            jsonInterval(allJSONInfo);
-        }
+        global_count = count;
+        jsonInterval(allJSONInfo);
     })
 }
 app.get('/', function(req,res){
