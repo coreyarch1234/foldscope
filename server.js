@@ -73,8 +73,12 @@ function getJSONInfo(url){
             //url
             var wordPressURL = url;
             //main header image
-
             var headerImageURL = $('meta[property="og:image"]').attr('content');
+            //short intro description
+            var description = $('.entry-content p:first-of-type').text()
+
+            console.log("the description is: ");
+            console.log(description);
 
             newsFeed = {
                 title: title,
@@ -83,6 +87,7 @@ function getJSONInfo(url){
                 category: category,
                 postURL: wordPressURL,
                 imageURL: headerImageURL,
+                description: description,
                 isWP: true
             }
             allJSONInfo.push(newsFeed);
@@ -242,6 +247,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || 'mongodb://localhost/fold
               allFeed.push(newsFeed);
               console.log("allFeed is done");
               console.log(allFeed);
+              db.dropDatabase();
               getPosts();
               return newsFeed;
           }else{
