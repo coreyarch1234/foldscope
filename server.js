@@ -178,6 +178,8 @@ function getPosts(){
         jsonInterval(allJSONInfo);
     })
 }
+
+//Routes
 app.get('/', function(req,res){
   db.collection("posts").find({isWP: true}).toArray(function(err, docs){
       if (err) throw error;
@@ -193,6 +195,8 @@ app.post('/', function(req,res){
     })
 });
 
+
+//Define database
 var db;
 
 // Connect to the database before starting the application server.
