@@ -95,6 +95,7 @@ function convertYear(year) {
   return newYear;
 }
 // newDate = convertDate(date);
+var wrongSizes = []
 
 function getJSONInfo(url){
     request(url, function(error, response, body){
@@ -126,11 +127,15 @@ function getJSONInfo(url){
                     return false
                 }
             })
-
             console.log("the description is: ");
             console.log(description);
             console.log();
             console.log("the description length is: " + description.length);
+            if (description.length < 200){
+                wrongSizes.push(wordPressURL +  " ->" + description.length)
+                console.log("this description should be more than 200");
+            }
+            console.log(wrongSizes);
 
             newsFeed = {
                 title: title,
