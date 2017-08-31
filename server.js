@@ -42,9 +42,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
-//scrape functions
-var scrapeFeed = require('./scrapers/scrape.js');
-var scraperFeed = require('./scrapers/scraper.js');
+
 var groupURL = "https://microcosmos.foldscope.com/";
 
 var newsFeed = {};
@@ -54,6 +52,49 @@ var allFeed = [];
 
 var global_count = 0;
 var urlArray = [];
+
+//Date conversion
+// var date = //Whatever date you get from the request
+var newDate, dateArray, month, newMonth, day, newDay, year, tempYear, newYear;
+var monthDict = {
+  "January": "1/",
+  "February": "2/",
+  "March": "3/",
+  "April": "4/",
+  "May": "5/",
+  "June": "6/",
+  "July": "7/",
+  "August": "8/",
+  "September": "9/",
+  "October": "10/",
+  "November": "11/",
+  "December": "12/",
+};
+function convertDate(date) {
+  dateArray = date.split(" ");
+  month = dateArray[0];
+  day = dateArray[1];
+  year = dateArray[2];
+  newMonth = convertMonth(month);
+  newDay = convertDay(day);
+  newYear = convertYear(year);
+  newDate = newMonth+newDay+newYear;
+  return newDate;
+}
+function convertMonth(month) {
+  newMonth = monthDict[month];
+  return newMonth;
+}
+function convertDay(day) {
+  newDay = day.replace(",", "/");
+  return newDay;
+}
+function convertYear(year) {
+  tempYear = year.split("");
+  newYear = tempYear[tempYear.length-2] + tempYear[tempYear.length-1];
+  return newYear;
+}
+// newDate = convertDate(date);
 
 function getJSONInfo(url){
     request(url, function(error, response, body){
@@ -68,6 +109,10 @@ function getJSONInfo(url){
             var author = $('span.author').text();
             //Date
             var date = $('time.entry-date').text();
+            //Convert date
+            var newDate = convertDate(date);
+            console.log("new date is: ");
+            console.log(newDate);
             //Category
             var category = $("[rel='category']").text();
             //url
@@ -83,6 +128,7 @@ function getJSONInfo(url){
             newsFeed = {
                 title: title,
                 author: author,
+                formatDate: newDate,
                 date: date,
                 category: category,
                 postURL: wordPressURL,
