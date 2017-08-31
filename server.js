@@ -111,8 +111,6 @@ function getJSONInfo(url){
             var date = $('time.entry-date').text();
             //Convert date
             var newDate = convertDate(date);
-            console.log("new date is: ");
-            console.log(newDate);
             //Category
             var category = $("[rel='category']").text();
             //url
@@ -120,10 +118,19 @@ function getJSONInfo(url){
             //main header image
             var headerImageURL = $('meta[property="og:image"]').attr('content');
             //short intro description
-            var description = $('.entry-content p:first-of-type').text()
+            // var description = $('.entry-content p:first-of-type').text();
+            var description = ""
+            $(".entry-content p").each(function(){
+                description += $(this).text();
+                if (description.length > 200){
+                    return false
+                }
+            })
 
             console.log("the description is: ");
             console.log(description);
+            console.log();
+            console.log("the description length is: " + description.length);
 
             newsFeed = {
                 title: title,
