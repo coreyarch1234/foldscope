@@ -12,7 +12,11 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 cheerio = require("cheerio");
 
+//Note model
 var Note = require('./models/post/post.js');
+
+//Date Converter
+var dateConverter = require('./helpers/convert-date.js');
 
 var port = 3000;
 
@@ -48,49 +52,6 @@ var newsFeed = {};
 var allJSONInfo = [];
 //Array of URL attributes of all posts
 var arrayURLS = [];
-var allFeed = [];
-
-//Date conversion
-// var date = //Whatever date you get from the request
-var newDate, dateArray, month, newMonth, day, newDay, year, tempYear, newYear;
-var monthDict = {
-  "January": "1/",
-  "February": "2/",
-  "March": "3/",
-  "April": "4/",
-  "May": "5/",
-  "June": "6/",
-  "July": "7/",
-  "August": "8/",
-  "September": "9/",
-  "October": "10/",
-  "November": "11/",
-  "December": "12/",
-};
-function convertDate(date) {
-  dateArray = date.split(" ");
-  month = dateArray[0];
-  day = dateArray[1];
-  year = dateArray[2];
-  newMonth = convertMonth(month);
-  newDay = convertDay(day);
-  newYear = convertYear(year);
-  newDate = newMonth+newDay+newYear;
-  return newDate;
-}
-function convertMonth(month) {
-  newMonth = monthDict[month];
-  return newMonth;
-}
-function convertDay(day) {
-  newDay = day.replace(",", "/");
-  return newDay;
-}
-function convertYear(year) {
-  tempYear = year.split("");
-  newYear = tempYear[tempYear.length-2] + tempYear[tempYear.length-1];
-  return newYear;
-}
 
 //Routes
 app.get('/', function(req,res){
@@ -114,10 +75,15 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function() {
-
     app.listen(process.env.PORT || port, function() {
         // console.log(process.env.PORT);
         console.log("Started at: " + port);
+        var latestPostURL = '';
+        Note.findOne({}, {}, { sort: { '_id' : -1 } }, function(err, note) {
+            // console.log("the latest post");
+            // console.log( note.postURL );
+            latestPostURL = note.postURL;
+        });
         request(groupURL, function(error, response, body){
             console.log("got to post scrape method");
             if (!error){
@@ -132,7 +98,14 @@ db.once('open', function() {
                         if (link.indexOf("#") !=-1) {
                             // console.log("this is a comment and should not be included");
                         }else{
-                            arrayURLS.push(link);
+                            if (link == latestPostURL){
+                                console.log("they are equal");
+                                return false;
+                            }else{
+                                console.log("still pushing");
+                                arrayURLS.push(link);
+                            }
+                            // arrayURLS.push(link);
                         }
                     }
                 });
@@ -150,7 +123,12 @@ db.once('open', function() {
               })(feed);
 
                 arrayURLS = newarr;
-                scraper(arrayURLS.pop());
+                // console.log(arrayURLS);
+                if (arrayURLS.length > 0){
+                    scraper(arrayURLS.pop());
+                }else{
+                    console.log("we are done early");
+                }
             }else{
                 console.log("An error occurred with scraping");
             }
@@ -163,6 +141,7 @@ db.once('open', function() {
 
 //lookup links
 function lookupLink(noteBody, callback){
+    console.log("MORE TIME ADDED");
     Note.findOne({postURL: noteBody.postURL}, function(err, note){
         if (note == null){
             Note.create(noteBody, function(err, note){
@@ -199,7 +178,8 @@ function scraper(url){
             //Date
             var date = $('time.entry-date').text();
             //Convert date
-            var newDate = convertDate(date);
+            // var newDate = convertDate(date);
+            var newDate = dateConverter(date);
             //Category
             var category = $("[rel='category']").text();
             //url
