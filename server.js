@@ -158,49 +158,6 @@ db.once('open', function() {
     })
 })
 
-//
-// app.listen(process.env.PORT || port, function() {
-//     // console.log(process.env.PORT);
-//     console.log("Started at: " + port);
-//     request(groupURL, function(error, response, body){
-//         console.log("got to post scrape method");
-//         if (!error){
-//             var $ = cheerio.load(body);
-//             //find all urls
-//             var wordPressURLSet = groupURL;
-//             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
-//             var link = "";
-//             var allURL = $('a').each(function(){
-//                 link = $(this).attr('href');
-//                 if (wordPressURLReg.test(link)){
-//                     if (link.indexOf("#") !=-1) {
-//                         // console.log("this is a comment and should not be included");
-//                     }else{
-//                         arrayURLS.push(link);
-//                     }
-//                 }
-//             });
-//             var feed = arrayURLS
-//               var newarr = (function(feed){
-//               var m = {}, newarr = []
-//               for (var i=0; i<feed.length; i++) {
-//                 var v = feed[i];
-//                 if (!m[v]) {
-//                   newarr.push(v);
-//                   m[v]=true;
-//                 }
-//               }
-//               return newarr;
-//           })(feed);
-//
-//             arrayURLS = newarr;
-//             scraper(arrayURLS.pop());
-//         }else{
-//             console.log("An error occurred with scraping");
-//         }
-//     });
-// })
-
 //array of links is arrayURLS
 
 
