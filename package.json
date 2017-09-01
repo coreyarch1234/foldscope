@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/coreyarch1234/foldscope#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.15.3",
