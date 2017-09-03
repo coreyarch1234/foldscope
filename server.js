@@ -13,7 +13,7 @@ var request = require("request");
 cheerio = require("cheerio");
 
 //Note model
-var Note = require('./models/post/post.js');
+var Note = require('./models/note/note.js');
 
 //Date Converter
 var dateConverter = require('./helpers/convert-date.js');
@@ -44,7 +44,14 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
 
-var groupURL = "https://microcosmos.foldscope.com/";
+var groupURLL = "https://microcosmos.foldscope.com/";
+
+var groupURLArray = [
+    "https://microcosmos.foldscope.com/?m=201709",
+    "https://microcosmos.foldscope.com/?m=201708",
+    "https://microcosmos.foldscope.com/?m=201707",
+    "https://microcosmos.foldscope.com/?m=201706"
+];
 
 //Object containing all post attributes
 var newsFeed = {};
@@ -75,73 +82,167 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function() {
+    // app.listen(process.env.PORT || port, function() {
+    //     // console.log(process.env.PORT);
+    //     console.log("Started at: " + port);
+    //     var latestPostURL = '';
+    //     Note.findOne({}, {}, { sort: { '_id' : -1 } }, function(err, note) {
+    //         // console.log("the latest post");
+    //         // console.log( note.postURL );
+    //         if (note != null){
+    //             latestPostURL = note.postURL;
+    //         }
+    //     });
+    //     request(groupURL, function(error, response, body){
+    //         console.log("got to post scrape method");
+    //         if (!error){
+    //             var $ = cheerio.load(body);
+    //             //find all urls
+    //             var wordPressURLSet = groupURL;
+    //             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
+    //             var link = "";
+    //             var allURL = $('a').each(function(){
+    //                 link = $(this).attr('href');
+    //                 if (wordPressURLReg.test(link)){
+    //                     if (link.indexOf("#") !=-1) {
+    //                         // console.log("this is a comment and should not be included");
+    //                     }else{
+    //                         if (link == latestPostURL){
+    //                             console.log("they are equal");
+    //                             console.log();
+    //                             console.log("latestPostURL:");
+    //                             console.log(latestPostURL);
+    //                             console.log("-----------");
+    //                             console.log("current link:");
+    //                             console.log(link);
+    //                             return false;
+    //                         }else{
+    //                             console.log("still pushing");
+    //                             arrayURLS.push(link);
+    //                         }
+    //                         // arrayURLS.push(link);
+    //                     }
+    //                 }
+    //             });
+    //             var feed = arrayURLS
+    //               var newarr = (function(feed){
+    //               var m = {}, newarr = []
+    //               for (var i=0; i<feed.length; i++) {
+    //                 var v = feed[i];
+    //                 if (!m[v]) {
+    //                   newarr.push(v);
+    //                   m[v]=true;
+    //                 }
+    //               }
+    //               return newarr;
+    //           })(feed);
+    //
+    //             arrayURLS = newarr;
+    //             console.log(arrayURLS);
+    //             if (arrayURLS.length > 0){
+    //                 scraper(arrayURLS.pop());
+    //             }else{
+    //                 console.log("we are done early");
+    //             }
+    //         }else{
+    //             console.log("An error occurred with scraping");
+    //         }
+    //     });
+    // })
+
     app.listen(process.env.PORT || port, function() {
         // console.log(process.env.PORT);
         console.log("Started at: " + port);
-        var latestPostURL = '';
-        Note.findOne({}, {}, { sort: { '_id' : -1 } }, function(err, note) {
-            // console.log("the latest post");
-            // console.log( note.postURL );
-            latestPostURL = note.postURL;
-        });
-        request(groupURL, function(error, response, body){
-            console.log("got to post scrape method");
-            if (!error){
-                var $ = cheerio.load(body);
-                //find all urls
-                var wordPressURLSet = groupURL;
-                var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
-                var link = "";
-                var allURL = $('a').each(function(){
-                    link = $(this).attr('href');
-                    if (wordPressURLReg.test(link)){
-                        if (link.indexOf("#") !=-1) {
-                            // console.log("this is a comment and should not be included");
-                        }else{
-                            if (link == latestPostURL){
-                                console.log("they are equal");
-                                return false;
-                            }else{
-                                console.log("still pushing");
-                                arrayURLS.push(link);
-                            }
-                            // arrayURLS.push(link);
-                        }
-                    }
-                });
-                var feed = arrayURLS
-                  var newarr = (function(feed){
-                  var m = {}, newarr = []
-                  for (var i=0; i<feed.length; i++) {
-                    var v = feed[i];
-                    if (!m[v]) {
-                      newarr.push(v);
-                      m[v]=true;
-                    }
-                  }
-                  return newarr;
-              })(feed);
-
-                arrayURLS = newarr;
-                // console.log(arrayURLS);
-                if (arrayURLS.length > 0){
-                    scraper(arrayURLS.pop());
-                }else{
-                    console.log("we are done early");
-                }
-            }else{
-                console.log("An error occurred with scraping");
-            }
-        });
+        var groupLink = groupURLArray.pop();
+        // console.log(groupLink);
+        groupScrapeLink(groupLink);
+        // groupScrapeLink(groupLink, function(){
+        //     console.log("reached callback");
+        //     var nextGroupLink = resolveGroupLinks();
+        //     if (nextGroupLink != undefined){
+        //         console.log("next Group Link is: " + nextGroupLink);
+        //         groupScrapeLink(nextGroupLink);
+        //     }else{
+        //         console.log("all group links scraped");
+        //         if (arrayURLS.length > 0){
+        //             scraper(arrayURLS.pop());
+        //         }else{
+        //             console.log("we are done early");
+        //         }
+        //     }
+        // })
     })
 })
 
+
+
+//For group links
+
+function resolveGroupLinks(){
+    if (groupURLArray.length > 0 ) {
+        return groupURLArray.pop();
+    }
+    return undefined;
+}
+
+
+
+function groupScrapeLink(groupURL){
+    console.log("reached group scrape link");
+    request(groupURL, function(error, response, body){
+        console.log("got to post scrape method");
+        if (!error){
+            var $ = cheerio.load(body);
+            //find all urls
+            var wordPressURLSet = groupURL;
+            var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
+            var link = "";
+            var allURL = $('a').each(function(){
+                link = $(this).attr('href');
+                if (wordPressURLReg.test(link)){
+                    if (link.indexOf("#") !=-1) {
+                        // console.log("this is a comment and should not be included");
+                    }else{
+                        arrayURLS.push(link);
+                    }
+                }
+            });
+            var feed = arrayURLS
+              var newarr = (function(feed){
+              var m = {}, newarr = []
+              for (var i=0; i<feed.length; i++) {
+                var v = feed[i];
+                if (!m[v]) {
+                  newarr.push(v);
+                  m[v]=true;
+                }
+              }
+              return newarr;
+          })(feed);
+            arrayURLS = newarr;
+            console.log(arrayURLS);
+            if (arrayURLS.length > 0){
+                scraper(arrayURLS.pop());
+            }else{
+                console.log("we are done early");
+            }
+
+
+        }else{
+            console.log("An error occurred with scraping");
+        }
+    });
+}
+
+
+//For each link
 //array of links is arrayURLS
 
 
 //lookup links
 function lookupLink(noteBody, callback){
     console.log("MORE TIME ADDED");
+    console.log(noteBody);
     Note.findOne({postURL: noteBody.postURL}, function(err, note){
         if (note == null){
             Note.create(noteBody, function(err, note){
@@ -185,9 +286,12 @@ function scraper(url){
             //url
             var wordPressURL = url;
             //main header image
+
+            //ID to order. Take ID end string of URL
+            var order_ID = url.split("=").pop();
             var headerImageURL = $('meta[property="og:image"]').attr('content');
             //short intro description
-            var description = ""
+            var description = " ";
             $(".entry-content p").each(function(){
                 description += $(this).text();
                 if (description.length > 200){
@@ -205,6 +309,7 @@ function scraper(url){
                 postURL: wordPressURL,
                 imageURL: headerImageURL,
                 description: description,
+                order_ID: order_ID,
                 isWP: true
             }
             lookupLink(newsFeed, function(){
@@ -214,6 +319,13 @@ function scraper(url){
                     scraper(nextLink);
                 }else{
                     console.log("all notes saved");
+                    var nextGroupLink = resolveGroupLinks();
+                    if (nextGroupLink != undefined){
+                        console.log("next Group Link is: " + nextGroupLink);
+                        groupScrapeLink(nextGroupLink);
+                    }else{
+                        console.log("all group links scraped");
+                    }
                 }
             })
         }else{

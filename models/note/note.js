@@ -11,7 +11,8 @@ var NoteSchema = new Schema({
   formatDate           : { type: String, unique: false, required: true },
   postURL              : { type: String, unique: true, required: false },
   imageURL             : { type: String, unique: false, required: false },
-  description          : { type: String, unique: true, required: false },
+  description          : { type: String, unique: false, required: false },
+  order_ID             : { type: String, unique: true, required: false },
   isWP                 : { type: Boolean, unique: false, required: true }
 });
 
