@@ -151,6 +151,7 @@ db.once('open', function() {
     // })
 
     app.listen(process.env.PORT || port, function() {
+        db.dropDatabase();
         // console.log(process.env.PORT);
         console.log("Started at: " + port);
         var groupLink = groupURLArray.pop();
