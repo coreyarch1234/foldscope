@@ -44,7 +44,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
 
-var groupURLL = "https://microcosmos.foldscope.com/";
+var homeURL = "https://microcosmos.foldscope.com/";
 
 var groupURLArray = [
     "https://microcosmos.foldscope.com/?m=201709",
