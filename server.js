@@ -70,17 +70,6 @@ var doesExist = true;
 
 var nextGroupLink = '';
 
-
-
-
-// get latest date
-// var dt = dateTime.create();
-// var currentYear = dt.format('Y')
-// var currentMonth = dt.format('m');
-// var currentPage = 1;
-// var currentDate = 'https://microcosmos.foldscope.com/?m=' + currentYear + currentMonth + '&paged=' + currentPage;
-
-
 //Object containing all post attributes
 var newsFeed = {};
 //Array containing all post objects
@@ -90,7 +79,18 @@ var arrayURLS = [];
 
 //Routes
 app.get('/', function(req,res){
-  Note.find({isWP: true},function(err, docs){
+  // Note.find({isWP: true},function(err, docs){
+  //     if (err) throw error;
+  //     res.send(docs)
+  // })
+  //get pageSize and pageNumber in req from iOS clientside
+  //default pageSize is 20
+  console.log("the request is: ");
+  console.log(req);
+  console.log(req.body);
+  var pageSize = 10;
+  var pageNumber = 3;
+  Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
       if (err) throw error;
       res.send(docs)
   })
@@ -98,6 +98,9 @@ app.get('/', function(req,res){
 
 //route to handle iOS post request
 app.post('/', function(req,res){
+    console.log("the request is: ");
+    console.log(req);
+    console.log(req.body);
     Note.find({isWP: true},function(err, docs){
         if (err) throw error;
         res.send(docs)
@@ -110,132 +113,9 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function() {
-    // app.listen(process.env.PORT || port, function() {
-    //     // console.log(process.env.PORT);
-    //     console.log("Started at: " + port);
-    //     var latestPostURL = '';
-    //     Note.findOne({}, {}, { sort: { '_id' : -1 } }, function(err, note) {
-    //         // console.log("the latest post");
-    //         // console.log( note.postURL );
-    //         if (note != null){
-    //             latestPostURL = note.postURL;
-    //         }
-    //     });
-    //     request(groupURL, function(error, response, body){
-    //         console.log("got to post scrape method");
-    //         if (!error){
-    //             var $ = cheerio.load(body);
-    //             //find all urls
-    //             var wordPressURLSet = groupURL;
-    //             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
-    //             var link = "";
-    //             var allURL = $('a').each(function(){
-    //                 link = $(this).attr('href');
-    //                 if (wordPressURLReg.test(link)){
-    //                     if (link.indexOf("#") !=-1) {
-    //                         // console.log("this is a comment and should not be included");
-    //                     }else{
-    //                         if (link == latestPostURL){
-    //                             console.log("they are equal");
-    //                             console.log();
-    //                             console.log("latestPostURL:");
-    //                             console.log(latestPostURL);
-    //                             console.log("-----------");
-    //                             console.log("current link:");
-    //                             console.log(link);
-    //                             return false;
-    //                         }else{
-    //                             console.log("still pushing");
-    //                             arrayURLS.push(link);
-    //                         }
-    //                         // arrayURLS.push(link);
-    //                     }
-    //                 }
-    //             });
-    //             var feed = arrayURLS
-    //               var newarr = (function(feed){
-    //               var m = {}, newarr = []
-    //               for (var i=0; i<feed.length; i++) {
-    //                 var v = feed[i];
-    //                 if (!m[v]) {
-    //                   newarr.push(v);
-    //                   m[v]=true;
-    //                 }
-    //               }
-    //               return newarr;
-    //           })(feed);
-    //
-    //             arrayURLS = newarr;
-    //             console.log(arrayURLS);
-    //             if (arrayURLS.length > 0){
-    //                 scraper(arrayURLS.pop());
-    //             }else{
-    //                 console.log("we are done early");
-    //             }
-    //         }else{
-    //             console.log("An error occurred with scraping");
-    //         }
-    //     });
-    // })
-
-    // app.listen(process.env.PORT || port, function() {
-    //     db.dropDatabase();
-    //     // console.log(process.env.PORT);
-    //     console.log("Started at: " + port);
-    //     var groupLink = groupURLArray.pop();
-    //     // console.log(groupLink);
-    //     groupScrapeLink(groupLink);
-    //     // groupScrapeLink(groupLink, function(){
-    //     //     console.log("reached callback");
-    //     //     var nextGroupLink = resolveGroupLinks();
-    //     //     if (nextGroupLink != undefined){
-    //     //         console.log("next Group Link is: " + nextGroupLink);
-    //     //         groupScrapeLink(nextGroupLink);
-    //     //     }else{
-    //     //         console.log("all group links scraped");
-    //     //         if (arrayURLS.length > 0){
-    //     //             scraper(arrayURLS.pop());
-    //     //         }else{
-    //     //             console.log("we are done early");
-    //     //         }
-    //     //     }
-    //     // })
-    // })
     app.listen(process.env.PORT || port, function() {
         // db.dropDatabase();
-        // console.log(process.env.PORT);
-        console.log("Started at: " + port);
-        // // get latest date
-        // var dt = dateTime.create();
-        // var currentDate = dt.format('Ym');
-        //
-        // //first date (final)
-        // var finalDate = '201411'
-        console.log("the final date is: " + moment("2014-11").format("YYYYMM"));
-        // console.log("the current date is: " + moment().subtract(12, 'months').format('YYYYMM'));
-        // console.log("the current date is: " + (moment().subtract(12, 'months').format('YYYYMM') < moment().subtract(11, 'months').format('YYYYMM')));
-
-        // console.log("the first date is: " + finalDate);
-
         groupScrapeLink(currentDateURL);
-        // var groupLink = groupURLArray.pop();
-        // console.log(groupLink);
-        // groupScrapeLink(groupLink);
-        // groupScrapeLink(groupLink, function(){
-        //     console.log("reached callback");
-        //     var nextGroupLink = resolveGroupLinks();
-        //     if (nextGroupLink != undefined){
-        //         console.log("next Group Link is: " + nextGroupLink);
-        //         groupScrapeLink(nextGroupLink);
-        //     }else{
-        //         console.log("all group links scraped");
-        //         if (arrayURLS.length > 0){
-        //             scraper(arrayURLS.pop());
-        //         }else{
-        //             console.log("we are done early");
-        //         }
-        //     }
-        // })
     })
 })
 
@@ -262,38 +142,6 @@ function checkPage(url, callback){
         }
     });
 }
-
-//to create all posts
-// function giveNextDate(currentPass){
-//     console.log("We are in the giveNextDate function");
-//     console.log("<--------------------->");
-//
-//     currentPage = currentPage + 1;
-//
-//     var currentURL = 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
-//
-//     console.log("the currentPass is: " + currentPass.format());
-//     console.log("the final date is: " + finalDate.format());
-//     //check if we are less than the final date. if so, return undefined
-//     if (currentPass < finalDate){
-//         console.log("current is less than final");
-//         return undefined
-//     }
-//
-//     //check if page exists. if not, decrement year and reset current page to 0. then call giveNextDate with currentDate again
-//     checkPage(currentURL, function(doesExist){
-//         if (doesExist == false){
-//             //decrement current by a month.
-//             console.log("the current date is: " + current.format());
-//             current.subtract(1, 'months');
-//             console.log("the current date after subtraction is: " + current.format())
-//             currentPage = 0
-//             giveNextDate(current)
-//         }else{
-//             return 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
-//         }
-//     })
-// }
 
 function giveNextDate(currentPass){
     console.log("We are in the giveNextDate function");
@@ -504,31 +352,6 @@ function scraper(url){
                     console.log("next Link is: " + nextLink);
                     scraper(nextLink);
                 }else{
-                    // console.log("all notes saved");
-                    // var nextGroupLink = resolveGroupLinks();
-                    // if (nextGroupLink != undefined){
-                    //     console.log("next Group Link is: " + nextGroupLink);
-                    //     groupScrapeLink(nextGroupLink);
-                    // }else{
-                    //     console.log("all group links scraped");
-                    // }
-                    // console.log("all notes saved");
-                    // if (endOfLinkCreation == true){
-                    //     return
-                    // }else{
-                    //     console.log("current is: " + current.format());
-                    //     nextGroupLink = giveNextDate(current);
-                    //     if (nextGroupLink != undefined){
-                    //         console.log("next Group Link is: " + nextGroupLink);
-                    //         groupScrapeLink(nextGroupLink);
-                    //     }else{
-                    //         console.log("all group links scraped");
-                    //         console.log("the current date is: " + current);
-                    //         console.log(nextGroupLink);
-                    //         return
-                    //     }
-                    //
-                    // }
                     console.log("all notes saved");
                     //this is if we found a duplicate
                     if (endOfLinkCreation == true){
