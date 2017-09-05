@@ -98,10 +98,16 @@ app.get('/', function(req,res){
 
 //route to handle iOS post request
 app.post('/', function(req,res){
+    // Note.find({isWP: true},function(err, docs){
+    //     if (err) throw error;
+    //     res.send(docs)
+    // })
     console.log("the request is: ");
     console.log(req);
     console.log(req.body);
-    Note.find({isWP: true},function(err, docs){
+    var pageSize = 10;
+    var pageNumber = req.body.pageNumber;
+    Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
         if (err) throw error;
         res.send(docs)
     })
