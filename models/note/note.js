@@ -6,7 +6,7 @@ var NoteSchema = new Schema({
   updatedAt            : { type: Date, default: Date() },
   title                : { type: String, unique: false, required: false },
   author               : { type: String, unique: false, required: true },
-  category             : { type: String, unique: false, required: true },
+  category             : { type: String, unique: false, required: false },
   date                 : { type: String, unique: false, required: true },
   formatDate           : { type: String, unique: false, required: true },
   postURL              : { type: String, unique: true, required: false },

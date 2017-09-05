@@ -202,7 +202,7 @@ db.once('open', function() {
     //     // })
     // })
     app.listen(process.env.PORT || port, function() {
-        db.dropDatabase();
+        // db.dropDatabase();
         // console.log(process.env.PORT);
         console.log("Started at: " + port);
         // // get latest date
@@ -309,6 +309,10 @@ function giveNextDate(currentPass){
     if (currentPass < finalDate){
         console.log("current is less than final");
         nextGroupLink = undefined;
+        console.log("all group links scraped");
+        console.log("the current date is: " + current);
+        console.log(nextGroupLink);
+        return
         // return undefined
     }
 
@@ -526,10 +530,12 @@ function scraper(url){
                     //
                     // }
                     console.log("all notes saved");
+                    //this is if we found a duplicate
                     if (endOfLinkCreation == true){
                         return
                     }else{
                         console.log("current is: " + current.format());
+                        //We have not found a duplicate and we call nextDate to change current date to one less month
                         giveNextDate(current);
 
                     }
