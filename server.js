@@ -24,6 +24,9 @@ var mongodb = require("mongodb");
 // Setting up Database
 var mongoose = require('mongoose');
 
+//to get current date
+var dateTime = require('node-datetime');
+
 // Use bluebird
 mongoose.Promise = require('bluebird');
 // assert.equal(query.exec().constructor, require('bluebird'));
@@ -52,6 +55,31 @@ var groupURLArray = [
     "https://microcosmos.foldscope.com/?m=201707",
     "https://microcosmos.foldscope.com/?m=201706"
 ];
+
+var endOfLinkCreation = false;
+
+var moment = require('moment');
+
+var current = moment();
+var currentPage = 1;
+var currentDateURL = 'https://microcosmos.foldscope.com/?m=' + current.format('YYYYMM') + '&paged=' + currentPage;
+
+var finalDate = moment("2014-11");
+
+var doesExist = true;
+
+var nextGroupLink = '';
+
+
+
+
+// get latest date
+// var dt = dateTime.create();
+// var currentYear = dt.format('Y')
+// var currentMonth = dt.format('m');
+// var currentPage = 1;
+// var currentDate = 'https://microcosmos.foldscope.com/?m=' + currentYear + currentMonth + '&paged=' + currentPage;
+
 
 //Object containing all post attributes
 var newsFeed = {};
@@ -150,13 +178,49 @@ db.once('open', function() {
     //     });
     // })
 
+    // app.listen(process.env.PORT || port, function() {
+    //     db.dropDatabase();
+    //     // console.log(process.env.PORT);
+    //     console.log("Started at: " + port);
+    //     var groupLink = groupURLArray.pop();
+    //     // console.log(groupLink);
+    //     groupScrapeLink(groupLink);
+    //     // groupScrapeLink(groupLink, function(){
+    //     //     console.log("reached callback");
+    //     //     var nextGroupLink = resolveGroupLinks();
+    //     //     if (nextGroupLink != undefined){
+    //     //         console.log("next Group Link is: " + nextGroupLink);
+    //     //         groupScrapeLink(nextGroupLink);
+    //     //     }else{
+    //     //         console.log("all group links scraped");
+    //     //         if (arrayURLS.length > 0){
+    //     //             scraper(arrayURLS.pop());
+    //     //         }else{
+    //     //             console.log("we are done early");
+    //     //         }
+    //     //     }
+    //     // })
+    // })
     app.listen(process.env.PORT || port, function() {
         db.dropDatabase();
         // console.log(process.env.PORT);
         console.log("Started at: " + port);
-        var groupLink = groupURLArray.pop();
+        // // get latest date
+        // var dt = dateTime.create();
+        // var currentDate = dt.format('Ym');
+        //
+        // //first date (final)
+        // var finalDate = '201411'
+        console.log("the final date is: " + moment("2014-11").format("YYYYMM"));
+        // console.log("the current date is: " + moment().subtract(12, 'months').format('YYYYMM'));
+        // console.log("the current date is: " + (moment().subtract(12, 'months').format('YYYYMM') < moment().subtract(11, 'months').format('YYYYMM')));
+
+        // console.log("the first date is: " + finalDate);
+
+        groupScrapeLink(currentDateURL);
+        // var groupLink = groupURLArray.pop();
         // console.log(groupLink);
-        groupScrapeLink(groupLink);
+        // groupScrapeLink(groupLink);
         // groupScrapeLink(groupLink, function(){
         //     console.log("reached callback");
         //     var nextGroupLink = resolveGroupLinks();
@@ -175,7 +239,113 @@ db.once('open', function() {
     })
 })
 
+function checkPage(url, callback){
+    request(url, function(error, response, body){
+        console.log("got to post scrape method");
+        if (!error){
+            var $ = cheerio.load(body);
+            //find all urls
 
+            var pageExist = $('body').hasClass('error404');
+            if (pageExist == true){
+                doesExist = false;
+                console.log("page does NOT exist and calling callback");
+                callback(doesExist);
+            }else{
+                doesExist = true;
+                console.log("page does  exist and calling callback");
+                callback(doesExist);
+            }
+        }else{
+            console.log("An error occurred with scraping");
+            console.log(error);
+        }
+    });
+}
+
+//to create all posts
+// function giveNextDate(currentPass){
+//     console.log("We are in the giveNextDate function");
+//     console.log("<--------------------->");
+//
+//     currentPage = currentPage + 1;
+//
+//     var currentURL = 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
+//
+//     console.log("the currentPass is: " + currentPass.format());
+//     console.log("the final date is: " + finalDate.format());
+//     //check if we are less than the final date. if so, return undefined
+//     if (currentPass < finalDate){
+//         console.log("current is less than final");
+//         return undefined
+//     }
+//
+//     //check if page exists. if not, decrement year and reset current page to 0. then call giveNextDate with currentDate again
+//     checkPage(currentURL, function(doesExist){
+//         if (doesExist == false){
+//             //decrement current by a month.
+//             console.log("the current date is: " + current.format());
+//             current.subtract(1, 'months');
+//             console.log("the current date after subtraction is: " + current.format())
+//             currentPage = 0
+//             giveNextDate(current)
+//         }else{
+//             return 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
+//         }
+//     })
+// }
+
+function giveNextDate(currentPass){
+    console.log("We are in the giveNextDate function");
+    console.log("<--------------------->");
+
+    currentPage = currentPage + 1;
+
+    var currentURL = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
+
+    console.log("the currentPass is: " + currentPass.format());
+    console.log("the final date is: " + finalDate.format());
+    //check if we are less than the final date. if so, return undefined
+    if (currentPass < finalDate){
+        console.log("current is less than final");
+        nextGroupLink = undefined;
+        // return undefined
+    }
+
+    console.log('the current url is: ' + currentURL);
+
+    //check if page exists. if not, decrement year and reset current page to 0. then call giveNextDate with currentDate again
+    checkPage(currentURL, function(doesExist){
+        if (doesExist == false){
+            //decrement current by a month.
+            console.log("the current date is: " + current.format());
+            current.subtract(1, 'months');
+            console.log("the current date after subtraction is: " + current.format())
+            currentPage = 0
+            giveNextDate(current)
+        }else{
+            nextGroupLink = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
+            // callback(nextGroupLink);
+            console.log("we are stuck")
+            if (nextGroupLink != undefined){
+                console.log("next Group Link is: " + nextGroupLink);
+                //reset array of urls
+                // arrayURLS = [];
+                console.log("<--------------------->");
+                console.log("the nextGroupLink is: ");
+                console.log(nextGroupLink);
+                console.log("<--------------------->");
+                groupScrapeLink(nextGroupLink);
+            }else{
+                console.log("all group links scraped");
+                console.log("the current date is: " + current);
+                console.log(nextGroupLink);
+                return
+            }
+            // return 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
+        }
+    })
+}
 
 //For group links
 
@@ -193,17 +363,24 @@ function groupScrapeLink(groupURL){
     request(groupURL, function(error, response, body){
         console.log("got to post scrape method");
         if (!error){
+            arrayURLS = [];
+            console.log(arrayURLS);
+            console.log(groupURL)
             var $ = cheerio.load(body);
             //find all urls
             var wordPressURLSet = groupURL;
             var wordPressURLReg = /(https:\/\/microcosmos.foldscope.com\/\?p=\d+)/;
             var link = "";
-            var allURL = $('a').each(function(){
+            console.log(arrayURLS);
+            var allURL = $('a.cover-link').each(function(){
                 link = $(this).attr('href');
                 if (wordPressURLReg.test(link)){
                     if (link.indexOf("#") !=-1) {
                         // console.log("this is a comment and should not be included");
                     }else{
+                        console.log("<--------------------->");
+                        console.log("being pushed: " + link);
+                        console.log("<--------------------->");
                         arrayURLS.push(link);
                     }
                 }
@@ -222,6 +399,7 @@ function groupScrapeLink(groupURL){
           })(feed);
             arrayURLS = newarr;
             console.log(arrayURLS);
+            arrayURLS.reverse();
             if (arrayURLS.length > 0){
                 scraper(arrayURLS.pop());
             }else{
@@ -231,6 +409,7 @@ function groupScrapeLink(groupURL){
 
         }else{
             console.log("An error occurred with scraping");
+            console.log(error);
         }
     });
 }
@@ -254,7 +433,9 @@ function lookupLink(noteBody, callback){
                 }
             })
         }else{
-            callback();
+            // callback();
+            console.log("we found a duplicate link and we will stop creating");
+            endOfLinkCreation = true;
         }
     })
 }
@@ -319,13 +500,38 @@ function scraper(url){
                     console.log("next Link is: " + nextLink);
                     scraper(nextLink);
                 }else{
+                    // console.log("all notes saved");
+                    // var nextGroupLink = resolveGroupLinks();
+                    // if (nextGroupLink != undefined){
+                    //     console.log("next Group Link is: " + nextGroupLink);
+                    //     groupScrapeLink(nextGroupLink);
+                    // }else{
+                    //     console.log("all group links scraped");
+                    // }
+                    // console.log("all notes saved");
+                    // if (endOfLinkCreation == true){
+                    //     return
+                    // }else{
+                    //     console.log("current is: " + current.format());
+                    //     nextGroupLink = giveNextDate(current);
+                    //     if (nextGroupLink != undefined){
+                    //         console.log("next Group Link is: " + nextGroupLink);
+                    //         groupScrapeLink(nextGroupLink);
+                    //     }else{
+                    //         console.log("all group links scraped");
+                    //         console.log("the current date is: " + current);
+                    //         console.log(nextGroupLink);
+                    //         return
+                    //     }
+                    //
+                    // }
                     console.log("all notes saved");
-                    var nextGroupLink = resolveGroupLinks();
-                    if (nextGroupLink != undefined){
-                        console.log("next Group Link is: " + nextGroupLink);
-                        groupScrapeLink(nextGroupLink);
+                    if (endOfLinkCreation == true){
+                        return
                     }else{
-                        console.log("all group links scraped");
+                        console.log("current is: " + current.format());
+                        giveNextDate(current);
+
                     }
                 }
             })
