@@ -128,7 +128,7 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         // db.dropDatabase();
         // groupScrapeLink(currentDateURL);
-        request('https://microcosmos.foldscope.com/?p=26664', function(error, response, body){
+        request('https://microcosmos.foldscope.com/?p=26692', function(error, response, body){
             if (!error){
                 var $ = cheerio.load(body);
                 //deleting styles
@@ -141,19 +141,35 @@ db.once('open', function() {
                 $("a.comment-reply-login").remove();
                 $("div.comment-respond").remove();
                 $("footer").remove();
+                $("span.says").remove();
+
+                var timeClass = $('time').attr('class');
+                var timeClassArray = timeClass.split(' ');
+                if (timeClassArray.length == 2) {
+                    $("time.updated").remove();
+                }
+
                 $("a.skip-link").empty();
                 $("header.site-header").empty();
 
                 //replacing
                 $("<div id='content' class='site-content'>").replaceWith(" ");
+                var headerImageURL = $('meta[property="og:image"]').attr('content');
+                $('<img src="' + headerImageURL +'" style=\"width: 90%;padding: 5px 0px;border-radius: 10px;position: relative;left: 50%;transform: translate(-50%, 0%);display: block;\">').insertBefore('div.entry-content');
+
+                var commentString = $('h2.comments-title').html().replace(/\s/g, '');
+
+                if (commentString === 'OneComment') {
+                  $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+                }
 
                 //adding
-                $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">');
+                $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
                 $('html').append('<link rel="stylesheet" href="/styles/main.css">');
+                $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
                 blogText = $.text();
                 blogHTML = $.html();
                 console.log(blogHTML);
-
             }else{
                 console.log("An error occurred with scraping");
             }
