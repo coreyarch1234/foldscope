@@ -15,8 +15,9 @@ html, body {
   vertical-align: middle;
   background-color: rgba(48, 148, 181, 1.0);
   color: #fff;
+  white-space: pre-wrap;
 }
-.site-content {
+.top-margin {
   margin-top: -50px;
 }
 .cat-links a {
@@ -59,8 +60,9 @@ html, body {
   margin-left: 20px;
   padding-right: 20px;
 }
-.entry-content img {
+.entry-content img:not(.emoji) {
   width: 90%;
+  height: auto;
   padding: 5px 0px;
   border-radius: 10px;
   position: relative;
@@ -115,7 +117,7 @@ ol li{
 }
 .comments-title {
   font-size: 0.8em;
-  color: #676767;
+  color: #898989;
   margin-bottom: 20px;
   margin-left: 30px;
 }
@@ -125,7 +127,7 @@ ol li{
   padding-left: 20px;
   width: 85%;
   margin: 0 auto;
-  margin-bottom: -1px;
+  /*margin-top: -1px;*/
 }
 .comment-body a:not(.url) {
   color: #333;
@@ -141,6 +143,9 @@ ol li{
   border-radius: 100%;
   margin-top: 20px;
   margin-right: 10px;
+}
+span.avatar-container img:hover {
+    pointer-events: none;
 }
 .comment-author {
   display: flex;
