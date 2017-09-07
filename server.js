@@ -111,7 +111,7 @@ app.post('/', function(req,res){
     console.log("the request is: ");
     console.log(req);
     console.log(req.body);
-    var pageSize = 10;
+    var pageSize = 25;
     var pageNumber = req.body.pageNumber;
     Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
         if (err) throw error;
@@ -127,37 +127,37 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         // db.dropDatabase();
-        // groupScrapeLink(currentDateURL);
-        request('https://microcosmos.foldscope.com/?p=26664', function(error, response, body){
-            if (!error){
-                var $ = cheerio.load(body);
-                //deleting styles
-                $("link[rel='stylesheet']").remove();
-                $("style[type='text/css']").remove();
-                $("div.sharedaddy").remove();
-                $("div.jp-relatedposts").remove();
-                $("nav.post-navigation").remove();
-                $("a.add-comment-link").remove();
-                $("a.comment-reply-login").remove();
-                $("div.comment-respond").remove();
-                $("footer").remove();
-                $("a.skip-link").empty();
-                $("header.site-header").empty();
-
-                //replacing
-                $("<div id='content' class='site-content'>").replaceWith(" ");
-
-                //adding
-                $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">');
-                $('html').append('<link rel="stylesheet" href="/styles/main.css">');
-                blogText = $.text();
-                blogHTML = $.html();
-                console.log(blogHTML);
-
-            }else{
-                console.log("An error occurred with scraping");
-            }
-        });
+        groupScrapeLink(currentDateURL);
+        // request('https://microcosmos.foldscope.com/?p=26664', function(error, response, body){
+        //     if (!error){
+        //         var $ = cheerio.load(body);
+        //         //deleting styles
+        //         $("link[rel='stylesheet']").remove();
+        //         $("style[type='text/css']").remove();
+        //         $("div.sharedaddy").remove();
+        //         $("div.jp-relatedposts").remove();
+        //         $("nav.post-navigation").remove();
+        //         $("a.add-comment-link").remove();
+        //         $("a.comment-reply-login").remove();
+        //         $("div.comment-respond").remove();
+        //         $("footer").remove();
+        //         $("a.skip-link").empty();
+        //         $("header.site-header").empty();
+        //
+        //         //replacing
+        //         $("<div id='content' class='site-content'>").replaceWith(" ");
+        //
+        //         //adding
+        //         $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">');
+        //         $('html').append('<link rel="stylesheet" href="/styles/main.css">');
+        //         blogText = $.text();
+        //         blogHTML = $.html();
+        //         console.log(blogHTML);
+        //
+        //     }else{
+        //         console.log("An error occurred with scraping");
+        //     }
+        // });
     })
 })
 
