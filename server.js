@@ -128,7 +128,7 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         // db.dropDatabase();
         // groupScrapeLink(currentDateURL);
-        request('https://microcosmos.foldscope.com/?p=26664', function(error, response, body){
+        request('https://microcosmos.foldscope.com/?p=27320', function(error, response, body){
             if (!error){
                 var $ = cheerio.load(body);
                 //deleting styles
@@ -170,10 +170,13 @@ db.once('open', function() {
                   $('<img src="' + headerImageURL +'" style=\"width: 90%;padding: 5px 0px;border-radius: 10px;position: relative;left: 50%;transform: translate(-50%, 0%);display: block;\">').insertBefore('div.entry-content');
                 }
 
-                var commentString = $('h2.comments-title').html().replace(/\s/g, '');
+                var hasComments = $(".comments-area").find('.comments-title').length;
+                if (hasComments!==0) {
+                    var commentString = $('h2.comments-title').html().replace(/\s/g, '');
 
-                if (commentString === 'OneComment') {
-                  $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+                    if (commentString === 'OneComment') {
+                      $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+                    }
                 }
 
                 //adding

@@ -104,7 +104,7 @@ img#wpstats {
   display: none;
 }
 .emoji {
- width: 0px;
+ width: 0.8em;
 }
 ol li{
   list-style-type: none;
@@ -182,5 +182,5 @@ cite.fn {
   font-weight: 500;
 }
 .the-pull-worked {
-  
+
 }
