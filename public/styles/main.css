@@ -1,7 +1,8 @@
 * {
   padding: 0;
   margin: 0;
-  overflow-x: hidden;
+  /*pointer-events: none;
+  cursor: default;*/
 }
 html, body {
 	width: 100%;
@@ -15,10 +16,6 @@ html, body {
   vertical-align: middle;
   background-color: rgba(48, 148, 181, 1.0);
   color: #fff;
-  white-space: pre-wrap;
-}
-.top-margin {
-  margin-top: -50px;
 }
 .cat-links a {
   font-size: 0.8em;
@@ -28,24 +25,17 @@ html, body {
   color: #fff;
   line-height: 38px;
 }
-.cat-links a:hover {
-  color: #fff;
-}
 .entry-title {
   font-size: 2em;
   font-weight: 700;
   color: #242424;
   margin-top: 30px;
-  margin-left: 20px;
-  padding-right: 20px;
 }
 .entry-posted {
   font-size: 0.7em;
   font-weight: 300;
   color: #696969;
   margin-bottom: 30px;
-  margin-left: 20px;
-  padding-right: 20px;
 }
 .entry-posted a {
   text-decoration: none;
@@ -57,12 +47,9 @@ html, body {
   font-size: 0.8em;
   font-weight: 300;
   color: #222;
-  margin-left: 20px;
-  padding-right: 20px;
 }
-.entry-content img:not(.emoji) {
+.entry-content img {
   width: 90%;
-  height: auto;
   padding: 5px 0px;
   border-radius: 10px;
   position: relative;
@@ -77,6 +64,7 @@ blockquote {
   padding-left: 10px;
   color: #666;
   font-size: 0.9em;
+  /*height: 50%;*/
 }
 p {
   margin-bottom: 20px;
@@ -103,81 +91,7 @@ a:hover {
 img#wpstats {
   display: none;
 }
+
 .emoji {
  width: 0px;
-}
-ol li{
-  list-style-type: none;
-}
-.comments-area-wrapper {
-  border-top: solid 1px #ddd;
-  background-color: #fcfcfc;
-  padding: 20px 0px;
-  width: 100%;
-}
-.comments-title {
-  font-size: 0.8em;
-  color: #898989;
-  margin-bottom: 20px;
-  margin-left: 30px;
-}
-.comment-body {
-  background-color: #fff;
-  border: solid 1px #ddd;
-  padding-left: 20px;
-  width: 85%;
-  margin: 0 auto;
-  /*margin-top: -1px;*/
-}
-.comment-body a:not(.url) {
-  color: #333;
-  font-weight: 400;
-  font-style: normal;
-}
-.comment-body a:hover {
-  color: #3094b5;
-}
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  margin-top: 20px;
-  margin-right: 10px;
-}
-span.avatar-container img:hover {
-    pointer-events: none;
-}
-.comment-author {
-  display: flex;
-  align-items: center;
-}
-.comment-meta a {
-  font-size: 0.5em;
-  color: #444;
-  font-weight: 300;
-  text-decoration: none;
-  display: inline;
-  margin-left: 60px;
-}
-.commentmetadata {
-  margin-top:-37px;
-  margin-bottom: 20px;
-}
-.comment-body p {
-  font-size: 0.7em;
-  font-weight: 200;
-  color: #232323;
-  padding-right: 20px;
-  word-wrap: break-word;
-}
-.url {
-  text-decoration: none;
-  color: #333;
-}
-cite.fn {
-  font-size: 0.7em;
-  color: #333;
-  font-style:normal;
-  text-decoration: none;
-  font-weight: 500;
 }
