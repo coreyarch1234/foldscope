@@ -128,71 +128,140 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         // db.dropDatabase();
         // groupScrapeLink(currentDateURL);
-        request('https://microcosmos.foldscope.com/?p=27320', function(error, response, body){
-            if (!error){
-                var $ = cheerio.load(body);
-                //deleting styles
-                $("link[rel='stylesheet']").remove();
-                $("style[type='text/css']").remove();
-                $("div.sharedaddy").remove();
-                $("div.jp-relatedposts").remove();
-                $("nav.post-navigation").remove();
-                $("a.add-comment-link").remove();
-                $("a.comment-reply-login").remove();
-                $("div.comment-respond").remove();
-                $("footer").remove();
-                $("span.says").remove();
+        Note.aggregate([ { $sample: { size: 1} } ], function(err, randomPost){
+                console.log(randomPost[0].postURL);
+                request(randomPost[0].postURL, function(error, response, body){
+                    if (!error){
+                        var $ = cheerio.load(body);
+                        //deleting styles
+                        $("link[rel='stylesheet']").remove();
+                        $("style[type='text/css']").remove();
+                        $("div.sharedaddy").remove();
+                        $("div.jp-relatedposts").remove();
+                        $("nav.post-navigation").remove();
+                        $("a.add-comment-link").remove();
+                        $("a.comment-reply-login").remove();
+                        $("div.comment-respond").remove();
+                        $("footer").remove();
+                        $("span.says").remove();
 
-                var timeClass = $('time').attr('class');
-                var timeClassArray = timeClass.split(' ');
-                if (timeClassArray.length == 2) {
-                    $("time.updated").remove();
-                }
+                        var timeClass = $('time').attr('class');
+                        var timeClassArray = timeClass.split(' ');
+                        if (timeClassArray.length == 2) {
+                            $("time.updated").remove();
+                        }
 
-                $("a.skip-link").empty();
-                $("header.site-header").empty();
+                        $("a.skip-link").empty();
+                        $("header.site-header").empty();
 
-                var siteBanner = $('div.site-banner-thumbnail').attr('title');
+                        var siteBanner = $('div.site-banner-thumbnail').attr('title');
 
-                if (siteBanner===undefined) {
-                  $('div.site-content').addClass('top-margin');
-                }
+                        if (siteBanner===undefined) {
+                          $('div.site-content').addClass('top-margin');
+                        }
 
 
 
-                //replacing
-                // $("<div id='content' class='site-content'>").replaceWith(" ");
+                        //replacing
+                        // $("<div id='content' class='site-content'>").replaceWith(" ");
 
-                var imageCount = $(".entry-content").find('img').length;
+                        var imageCount = $(".entry-content").find('img').length;
 
-                if (imageCount===0) {
-                  var headerImageURL = $('meta[property="og:image"]').attr('content');
-                  $('<img src="' + headerImageURL +'" style=\"width: 90%;padding: 5px 0px;border-radius: 10px;position: relative;left: 50%;transform: translate(-50%, 0%);display: block;\">').insertBefore('div.entry-content');
-                }
+                        if (imageCount===0) {
+                          var headerImageURL = $('meta[property="og:image"]').attr('content');
+                          $('<img src="' + headerImageURL +'" style=\"width: 90%;padding: 5px 0px;border-radius: 10px;position: relative;left: 50%;transform: translate(-50%, 0%);display: block;\">').insertBefore('div.entry-content');
+                        }
 
-                var hasComments = $(".comments-area").find('.comments-title').length;
-                if (hasComments!==0) {
-                    var commentString = $('h2.comments-title').html().replace(/\s/g, '');
+                        var hasComments = $(".comments-area").find('.comments-title').length;
+                        if (hasComments!==0) {
+                            var commentString = $('h2.comments-title').html().replace(/\s/g, '');
 
-                    if (commentString === 'OneComment') {
-                      $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+                            if (commentString === 'OneComment') {
+                              $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+                            }
+                        }
+
+                        //adding
+                        $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
+                        $('html').append('<link rel="stylesheet" href="/styles/main.css">');
+                        $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
+                        $('head').append("<link rel='stylesheet' id='jetpack_css-css' href='https://microcosmos.foldscope.com/wp-content/plugins/jetpack/css/jetpack.css?ver=4.3.1' type='text/css' media='all'/>");
+                        $('body').append("<link rel='stylesheet' id='mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0' type='text/css' media='all'/>");
+                        $('body').append("<link rel='stylesheet' id='wp-mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.6.6' type='text/css' media='all'/>");
+                        blogText = $.text();
+                        blogHTML = $.html();
+                        // console.log(blogHTML);
+                    }else{
+                        console.log("An error occurred with scraping");
                     }
-                }
-
-                //adding
-                $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
-                $('html').append('<link rel="stylesheet" href="/styles/main.css">');
-                $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
-                $('head').append("<link rel='stylesheet' id='jetpack_css-css' href='https://microcosmos.foldscope.com/wp-content/plugins/jetpack/css/jetpack.css?ver=4.3.1' type='text/css' media='all'/>");
-                $('body').append("<link rel='stylesheet' id='mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0' type='text/css' media='all'/>");
-                $('body').append("<link rel='stylesheet' id='wp-mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.6.6' type='text/css' media='all'/>");
-                blogText = $.text();
-                blogHTML = $.html();
-                console.log(blogHTML);
-            }else{
-                console.log("An error occurred with scraping");
+                });
             }
-        });
+        )
+        // request('https://microcosmos.foldscope.com/?p=27320', function(error, response, body){
+        //     if (!error){
+        //         var $ = cheerio.load(body);
+        //         //deleting styles
+        //         $("link[rel='stylesheet']").remove();
+        //         $("style[type='text/css']").remove();
+        //         $("div.sharedaddy").remove();
+        //         $("div.jp-relatedposts").remove();
+        //         $("nav.post-navigation").remove();
+        //         $("a.add-comment-link").remove();
+        //         $("a.comment-reply-login").remove();
+        //         $("div.comment-respond").remove();
+        //         $("footer").remove();
+        //         $("span.says").remove();
+        //
+        //         var timeClass = $('time').attr('class');
+        //         var timeClassArray = timeClass.split(' ');
+        //         if (timeClassArray.length == 2) {
+        //             $("time.updated").remove();
+        //         }
+        //
+        //         $("a.skip-link").empty();
+        //         $("header.site-header").empty();
+        //
+        //         var siteBanner = $('div.site-banner-thumbnail').attr('title');
+        //
+        //         if (siteBanner===undefined) {
+        //           $('div.site-content').addClass('top-margin');
+        //         }
+        //
+        //
+        //
+        //         //replacing
+        //         // $("<div id='content' class='site-content'>").replaceWith(" ");
+        //
+        //         var imageCount = $(".entry-content").find('img').length;
+        //
+        //         if (imageCount===0) {
+        //           var headerImageURL = $('meta[property="og:image"]').attr('content');
+        //           $('<img src="' + headerImageURL +'" style=\"width: 90%;padding: 5px 0px;border-radius: 10px;position: relative;left: 50%;transform: translate(-50%, 0%);display: block;\">').insertBefore('div.entry-content');
+        //         }
+        //
+        //         var hasComments = $(".comments-area").find('.comments-title').length;
+        //         if (hasComments!==0) {
+        //             var commentString = $('h2.comments-title').html().replace(/\s/g, '');
+        //
+        //             if (commentString === 'OneComment') {
+        //               $('h2.comments-title').replaceWith('<h2 class="comments-title">1 Comment</h2>');
+        //             }
+        //         }
+        //
+        //         //adding
+        //         $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
+        //         $('html').append('<link rel="stylesheet" href="/styles/main.css">');
+        //         $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
+        //         $('head').append("<link rel='stylesheet' id='jetpack_css-css' href='https://microcosmos.foldscope.com/wp-content/plugins/jetpack/css/jetpack.css?ver=4.3.1' type='text/css' media='all'/>");
+        //         $('body').append("<link rel='stylesheet' id='mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0' type='text/css' media='all'/>");
+        //         $('body').append("<link rel='stylesheet' id='wp-mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.6.6' type='text/css' media='all'/>");
+        //         blogText = $.text();
+        //         blogHTML = $.html();
+        //         // console.log(blogHTML);
+        //     }else{
+        //         console.log("An error occurred with scraping");
+        //     }
+        // });
     })
 })
 
