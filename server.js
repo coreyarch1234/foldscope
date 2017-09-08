@@ -111,7 +111,7 @@ app.post('/', function(req,res){
     console.log("the request is: ");
     console.log(req);
     console.log(req.body);
-    var pageSize = 25;
+    var pageSize = 50;
     var pageNumber = req.body.pageNumber;
     Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
         if (err) throw error;
