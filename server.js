@@ -87,9 +87,10 @@ app.get('/', function(req,res){
   //     if (err) throw error;
   //     res.send(docs)
   // })
-  Note.find({isWP: true}).sort( { order_ID: -1 } , function(err, docs){
-      if (err) throw error;
-      res.send(docs)
+
+  Note.find({isWP: true}).sort({"order_ID": -1}).exec(function(err,docs){
+      if (err) throw err;
+      res.json(docs);
   })
   //get pageSize and pageNumber in req from iOS clientside
   //default pageSize is 20

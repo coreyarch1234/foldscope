@@ -12,7 +12,7 @@ var NoteSchema = new Schema({
   postURL              : { type: String, unique: true, required: false },
   imageURL             : { type: String, unique: false, required: false },
   description          : { type: String, unique: false, required: false },
-  order_ID             : { type: String, unique: true, required: false },
+  order_ID             : { type: Number, unique: true, required: false },
   isWP                 : { type: Boolean, unique: false, required: true }
 });
 
