@@ -88,9 +88,18 @@ app.get('/', function(req,res){
   //     res.send(docs)
   // })
 
-  Note.find({isWP: true}).sort({"order_ID": -1}).exec(function(err,docs){
-      if (err) throw err;
-      res.json(docs);
+  // Note.find({isWP: true}).sort({"order_ID": -1}).exec(function(err,docs){
+  //     if (err) throw err;
+  //     res.json(docs);
+  // })
+  console.log("the request is: ");
+  console.log(req);
+  console.log(req.body);
+  var pageSize = 700;
+  var pageNumber = req.body.pageNumber;
+  Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
+      if (err) throw error;
+      res.send(docs)
   })
   //get pageSize and pageNumber in req from iOS clientside
   //default pageSize is 20
@@ -113,12 +122,21 @@ app.post('/', function(req,res){
     //     if (err) throw error;
     //     res.send(docs)
     // })
+    // console.log("the request is: ");
+    // console.log(req);
+    // console.log(req.body);
+    // var pageSize = 50;
+    // var pageNumber = req.body.pageNumber;
+    // Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
+    //     if (err) throw error;
+    //     res.send(docs)
+    // })
     console.log("the request is: ");
     console.log(req);
     console.log(req.body);
-    var pageSize = 50;
+    var pageSize = 700;
     var pageNumber = req.body.pageNumber;
-    Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
+    Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
         if (err) throw error;
         res.send(docs)
     })
