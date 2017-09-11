@@ -365,6 +365,9 @@ function resolveLinks() {
 }
 
 function scraper(url){
+    //Manipulate the post to madhur specs
+    // Save html under filename "postID.html" in a folder
+    //send to madhur over slack.
     request(url, function(error, response, body){
         if (!error){
             var $ = cheerio.load(body);
