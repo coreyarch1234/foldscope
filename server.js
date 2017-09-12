@@ -85,15 +85,6 @@ var arrayURLS = [];
 
 //Routes
 app.get('/', function(req,res){
-  // Note.find({isWP: true},function(err, docs){
-  //     if (err) throw error;
-  //     res.send(docs)
-  // })
-
-  // Note.find({isWP: true}).sort({"order_ID": -1}).exec(function(err,docs){
-  //     if (err) throw err;
-  //     res.json(docs);
-  // })
   console.log("the request is: ");
   console.log(req);
   console.log(req.body);
@@ -103,36 +94,10 @@ app.get('/', function(req,res){
       if (err) throw error;
       res.send(docs)
   })
-  //get pageSize and pageNumber in req from iOS clientside
-  //default pageSize is 20
-  // console.log("the request is: ");
-  // console.log(req);
-  // console.log(req.body);
-  // var pageSize = 10;
-  // var pageNumber = 3;
-  // Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
-  //     if (err) throw error;
-  //     res.send(docs)
-  // })
-  // res.send(blogHTML);
-
 });
 
 //route to handle iOS post request
 app.post('/', function(req,res){
-    // Note.find({isWP: true},function(err, docs){
-    //     if (err) throw error;
-    //     res.send(docs)
-    // })
-    // console.log("the request is: ");
-    // console.log(req);
-    // console.log(req.body);
-    // var pageSize = 50;
-    // var pageNumber = req.body.pageNumber;
-    // Note.find({isWP:true}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
-    //     if (err) throw error;
-    //     res.send(docs)
-    // })
     console.log("the request is: ");
     console.log(req);
     console.log(req.body);
@@ -151,38 +116,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
-        // db.dropDatabase();
         groupScrapeLink(currentDateURL);
-        // request('https://microcosmos.foldscope.com/?p=26664', function(error, response, body){
-        //     if (!error){
-        //         var $ = cheerio.load(body);
-        //         //deleting styles
-        //         $("link[rel='stylesheet']").remove();
-        //         $("style[type='text/css']").remove();
-        //         $("div.sharedaddy").remove();
-        //         $("div.jp-relatedposts").remove();
-        //         $("nav.post-navigation").remove();
-        //         $("a.add-comment-link").remove();
-        //         $("a.comment-reply-login").remove();
-        //         $("div.comment-respond").remove();
-        //         $("footer").remove();
-        //         $("a.skip-link").empty();
-        //         $("header.site-header").empty();
-        //
-        //         //replacing
-        //         $("<div id='content' class='site-content'>").replaceWith(" ");
-        //
-        //         //adding
-        //         $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">');
-        //         $('html').append('<link rel="stylesheet" href="/styles/main.css">');
-        //         blogText = $.text();
-        //         blogHTML = $.html();
-        //         console.log(blogHTML);
-        //
-        //     }else{
-        //         console.log("An error occurred with scraping");
-        //     }
-        // });
     })
 })
 
@@ -376,7 +310,7 @@ function scraper(url){
             var blogText = $.text();
             var blogHTML = $.html();
 
-//deleting styles
+            //deleting styles
             $("link[rel='stylesheet']").remove();
             $("style[type='text/css']").remove();
             $("div.sharedaddy").remove();
@@ -404,9 +338,7 @@ function scraper(url){
             }
 
 
-
             //replacing
-            // $("<div id='content' class='site-content'>").replaceWith(" ");
 
             var imageCount = $(".entry-content").find('img').length;
 
@@ -426,22 +358,26 @@ function scraper(url){
                 }
             }
 
-                var hasPrevPostLink = $('blockquote.wp-embedded-content > p').length;
+            var hasPrevPostLink = $('blockquote.wp-embedded-content > p').length;
 
-                if (hasPrevPostLink>0) {
-                  $('<div class="default-image-container"></div>').prependTo('blockquote.wp-embedded-content');
-                  $('<img class="default-image" src="http://madhur.xyz/foldscope.jpg">').prependTo('.default-image-container');
-                }
+            if (hasPrevPostLink>0) {
+              $('<div class="default-image-container"></div>').prependTo('blockquote.wp-embedded-content');
+              $('<img class="default-image" src="http://madhur.xyz/foldscope.jpg">').prependTo('.default-image-container');
+            }
 
-               var hasTitle = $('h1.entry-title').length;
+            var hasTitle = $('h1.entry-title').length;
 
-               if (hasTitle===0) {
-                 $('div.entry-posted').addClass('title-space');
-               }
+            if (hasTitle===0) {
+              $('div.entry-posted').addClass('title-space');
+            }
+
+            var spanContent = $("span[style='font-size: 1.8rem']").contents();
+            $("span[style='font-size: 1.8rem']").replaceWith(spanContent);
+
 
             //adding
             $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
-            $('html').append('<link rel="stylesheet" href="styles/main.css">');
+            $('head').append('<link rel="stylesheet" href="/styles/main.css">');
             $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
             $('head').append("<link rel='stylesheet' id='jetpack_css-css' href='https://microcosmos.foldscope.com/wp-content/plugins/jetpack/css/jetpack.css?ver=4.3.1' type='text/css' media='all'/>");
             $('body').append("<link rel='stylesheet' id='mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0' type='text/css' media='all'/>");
