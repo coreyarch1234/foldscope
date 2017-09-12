@@ -377,7 +377,7 @@ function scraper(url){
 
             //adding
             $('head').append('<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,700" rel="stylesheet">');
-            $('head').append('<link rel="stylesheet" href="/styles/main.css">');
+            $('head').append('<link rel="stylesheet" href="styles/main.css">');
             $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
             $('head').append("<link rel='stylesheet' id='jetpack_css-css' href='https://microcosmos.foldscope.com/wp-content/plugins/jetpack/css/jetpack.css?ver=4.3.1' type='text/css' media='all'/>");
             $('body').append("<link rel='stylesheet' id='mediaelement-css' href='https://microcosmos.foldscope.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0' type='text/css' media='all'/>");
