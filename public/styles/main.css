@@ -1,14 +1,16 @@
 * {
   padding: 0;
   margin: 0;
-  /*pointer-events: none;
-  cursor: default;*/
+  overflow-x: hidden;
 }
 html, body {
 	width: 100%;
-	background-color: #fff;
 	font-family: 'Montserrat';
   font-size: 1.2em;
+  background-color: #fcfcfc;
+}
+.entry-inner {
+  background-color: #fff;
 }
 .cat-links {
   padding: 5px 10px;
@@ -16,6 +18,10 @@ html, body {
   vertical-align: middle;
   background-color: rgba(48, 148, 181, 1.0);
   color: #fff;
+  white-space: pre-wrap;
+}
+.top-margin {
+  margin-top: -50px;
 }
 .cat-links a {
   font-size: 0.8em;
@@ -25,10 +31,18 @@ html, body {
   color: #fff;
   line-height: 38px;
 }
+.cat-links a:hover {
+  color: #fff;
+}
 .entry-title {
   font-size: 2em;
   font-weight: 700;
   color: #242424;
+  margin-top: 30px;
+  margin-left: 20px;
+  padding-right: 20px;
+}
+.title-space {
   margin-top: 30px;
 }
 .entry-posted {
@@ -36,6 +50,8 @@ html, body {
   font-weight: 300;
   color: #696969;
   margin-bottom: 30px;
+  margin-left: 20px;
+  padding-right: 20px;
 }
 .entry-posted a {
   text-decoration: none;
@@ -47,29 +63,50 @@ html, body {
   font-size: 0.8em;
   font-weight: 300;
   color: #222;
+  margin-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
 }
-.entry-content img {
+.entry-content img:not(.emoji) {
   width: 90%;
-  padding: 5px 0px;
-  border-radius: 10px;
+  height: auto;
+  border-radius: 5px;
   position: relative;
   left: 50%;
   transform: translate(-50%, 0%);
   display: block;
+  margin: 10px 0px;
 }
-blockquote {
+.wp-caption {
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+.wp-caption > a > img.size-medium {
+  /*access figure/caption images only*/
+}
+.wp-caption figcaption {
+  text-align: center;
+  font-size: 0.8em;
+  font-weight: 300;
+  color: #898989;
+  padding-top: 5px;
+}
+blockquote:not(.wp-embedded-content){
   font-style: italic;
   margin-left: 30px;
   border-left: 4px solid #444;
   padding-left: 10px;
   color: #666;
   font-size: 0.9em;
-  /*height: 50%;*/
+  margin-bottom: 20px;
 }
 p {
   margin-bottom: 20px;
 }
 b {
+  font-weight: 500;
+}
+strong {
   font-weight: 500;
 }
 .jetpack-video-wrapper {
@@ -91,7 +128,119 @@ a:hover {
 img#wpstats {
   display: none;
 }
-
 .emoji {
- width: 0px;
+ width: 0.9em;
+}
+ol li{
+  list-style-type: none;
+}
+.comments-area-wrapper {
+  border-top: solid 1px #ddd;
+  background-color: #fcfcfc;
+  padding: 20px 0px;
+  width: 100%;
+}
+.comments-title {
+  font-size: 0.8em;
+  color: #898989;
+  margin-bottom: 20px;
+  margin-left: 30px;
+}
+.comment-list > li:first-of-type > div {
+  border-top: solid 2px #ddd;
+}
+.comment-body {
+  background-color: #fff;
+  border: solid 1px #ddd;
+  padding-left: 20px;
+  width: 85%;
+  margin: 0 auto;
+  margin-top: -1px;
+}
+.comment-body a:not(.url) {
+  color: #333;
+  font-weight: 400;
+  font-style: normal;
+}
+.comment-body a:hover {
+  color: #3094b5;
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+span.avatar-container img:hover {
+    pointer-events: none;
+}
+.comment-author {
+  display: flex;
+  align-items: center;
+}
+.comment-meta a {
+  font-size: 0.5em;
+  color: #444;
+  font-weight: 300;
+  text-decoration: none;
+  display: inline;
+  margin-left: 60px;
+}
+.commentmetadata {
+  margin-top:-37px;
+  margin-bottom: 20px;
+}
+.comment-body p {
+  font-size: 0.7em;
+  font-weight: 200;
+  color: #232323;
+  padding-right: 20px;
+  word-wrap: break-word;
+}
+.url {
+  text-decoration: none;
+  color: #333;
+}
+cite.fn {
+  font-size: 0.7em;
+  color: #333;
+  font-style:normal;
+  text-decoration: none;
+  font-weight: 500;
+}
+.wp-embedded-content {
+  border: solid 1px #aaa;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+}
+.wp-embedded-content p {
+  padding: 5px;
+  margin: 0;
+}
+.wp-embedded-content a {
+  text-decoration: none;
+  color: #555;
+}
+.default-image-container {
+  width: 100px;
+}
+.default-image {
+  margin-left: -5px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+.wp-embedded-content:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+.pingback {
+  font-weight: 300;
+  font-size: 0.7em;
+}
+.pingback .comment-body {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
