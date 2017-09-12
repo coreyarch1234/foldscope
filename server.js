@@ -447,13 +447,6 @@ function scraper(url){
             blogText = $.text();
             blogHTML = $.html();
             console.log("has title: " + hasTitle);
-            //save blogHTML to a folder
-            fs.writeFile("./mobile_sites/blog.html", blogHTML, function(err){
-                if(err){
-                    return console.log(err);
-                }
-                console.log("The file was saved!");
-            })
 
             //Title
             var title = $('h1.entry-title').text().trim();
@@ -495,6 +488,14 @@ function scraper(url){
                 order_ID: order_ID,
                 isWP: true
             }
+            //save blogHTML to a folder
+            var id_html = "./mobile_sites/" + order_ID.toString() + ".html";
+            fs.writeFile(id_html, blogHTML, function(err){
+                if(err){
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            })
             lookupLink(newsFeed, function(){
                 var nextLink = resolveLinks();
                 if (nextLink != undefined){
