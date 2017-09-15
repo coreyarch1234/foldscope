@@ -116,6 +116,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
+        console.log("env port" + process.env.PORT);
         groupScrapeLink(currentDateURL);
     })
 })
