@@ -29,6 +29,7 @@ var dateTime = require('node-datetime');
 
 var fs = require('fs');
 
+
 // Use bluebird
 mongoose.Promise = require('bluebird');
 // assert.equal(query.exec().constructor, require('bluebird'));
@@ -311,6 +312,7 @@ function scraper(url){
             var blogText = $.text();
             var blogHTML = $.html();
 
+
             //deleting styles
             $("link[rel='stylesheet']").remove();
             $("style[type='text/css']").remove();
@@ -427,7 +429,7 @@ function scraper(url){
                 order_ID: order_ID,
                 isWP: true
             }
-            //save blogHTML to a folder
+            save blogHTML to a folder
             var id_html = "./mobile_sites/" + order_ID.toString() + ".html";
             fs.writeFile(id_html, blogHTML, function(err){
                 if(err){
