@@ -29,6 +29,8 @@ var dateTime = require('node-datetime');
 
 var fs = require('fs');
 
+var cron = require('node-cron');
+
 
 // Use bluebird
 mongoose.Promise = require('bluebird');
@@ -119,6 +121,11 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
         groupScrapeLink(currentDateURL);
+
+        //cron job every 1 min
+        cron.schedule('* * * * *', function(){
+          console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+        });
     })
 })
 
@@ -429,7 +436,7 @@ function scraper(url){
                 order_ID: order_ID,
                 isWP: true
             }
-            save blogHTML to a folder
+            // save blogHTML to a folder
             var id_html = "./mobile_sites/" + order_ID.toString() + ".html";
             fs.writeFile(id_html, blogHTML, function(err){
                 if(err){

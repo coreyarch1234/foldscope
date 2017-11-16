@@ -27,6 +27,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "mongoose": "^4.11.7",
+    "node-cron": "^1.2.1",
     "node-datetime": "^2.0.0",
     "pdf-text": "^0.4.0",
     "phantom": "^4.0.5",
