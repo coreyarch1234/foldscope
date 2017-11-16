@@ -1,43 +1,32 @@
 //Middleware
-
-//Express
 var express = require('express');
 var exphbs  = require('express-handlebars');
-//App
 var app = express();
-//To parse post requests
+
 var bodyParser = require('body-parser');
-//request to merge HTTP and HTTPS
-var request = require("request");
-//cheerio to work with downloaded web data using jquery on the server
-cheerio = require("cheerio");
+var mongodb = require("mongodb");
+var mongoose = require('mongoose');
 
 //Note model
 var Note = require('./models/note/note.js');
 
-//Date Converter
 var dateConverter = require('./helpers/convert-date.js');
 
 var port = 3000;
 
-var mongodb = require("mongodb");
-// Setting up Database
-var mongoose = require('mongoose');
-
-//to get current date
 var dateTime = require('node-datetime');
-
 var fs = require('fs');
-
 var cron = require('node-cron');
+//request to merge HTTP and HTTPS
+var request = require("request");
+//cheerio to work with downloaded web data using jquery on the server
+var cheerio = require("cheerio");
 
 
 // Use bluebird
 mongoose.Promise = require('bluebird');
-// assert.equal(query.exec().constructor, require('bluebird'));
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/foldscope', {
   useMongoClient: true,
-  /* other options */
 });
 
 //body parser
@@ -51,9 +40,6 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
-
-var homeURL = "https://microcosmos.foldscope.com/";
-
 var groupURLArray = [
     "https://microcosmos.foldscope.com/?m=201709",
     "https://microcosmos.foldscope.com/?m=201708",
@@ -62,7 +48,6 @@ var groupURLArray = [
 ];
 
 var blogHTML = '';
-
 var blogText = '';
 
 var endOfLinkCreation = false;
@@ -81,16 +66,13 @@ var nextGroupLink = '';
 
 //Object containing all post attributes
 var newsFeed = {};
-//Array containing all post objects
-var allJSONInfo = [];
+
 //Array of URL attributes of all posts
 var arrayURLS = [];
 
 //Routes
 app.get('/', function(req,res){
-  console.log("the request is: ");
-  console.log(req);
-  console.log(req.body);
+  //send back docs paginated.
   var pageSize = 700;
   var pageNumber = req.body.pageNumber;
   Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
@@ -101,9 +83,7 @@ app.get('/', function(req,res){
 
 //route to handle iOS post request
 app.post('/', function(req,res){
-    console.log("the request is: ");
-    console.log(req);
-    console.log(req.body);
+    //send back docs paginated
     var pageSize = 700;
     var pageNumber = req.body.pageNumber;
     Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
@@ -120,104 +100,14 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
-        groupScrapeLink(currentDateURL);
 
         //cron job every 1 min
         cron.schedule('* * * * *', function(){
           console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+          groupScrapeLink(currentDateURL);
         });
     })
-})
-
-function checkPage(url, callback){
-    request(url, function(error, response, body){
-        console.log("got to post scrape method");
-        if (!error){
-            var $ = cheerio.load(body);
-            //find all urls
-
-            var pageExist = $('body').hasClass('error404');
-            if (pageExist == true){
-                doesExist = false;
-                console.log("page does NOT exist and calling callback");
-                callback(doesExist);
-            }else{
-                doesExist = true;
-                console.log("page does  exist and calling callback");
-                callback(doesExist);
-            }
-        }else{
-            console.log("An error occurred with scraping");
-            console.log(error);
-        }
-    });
-}
-
-function giveNextDate(currentPass){
-    console.log("We are in the giveNextDate function");
-    console.log("<--------------------->");
-
-    currentPage = currentPage + 1;
-
-    var currentURL = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
-
-    console.log("the currentPass is: " + currentPass.format());
-    console.log("the final date is: " + finalDate.format());
-    //check if we are less than the final date. if so, return undefined
-    if (currentPass < finalDate){
-        console.log("current is less than final");
-        nextGroupLink = undefined;
-        console.log("all group links scraped");
-        console.log("the current date is: " + current);
-        console.log(nextGroupLink);
-        return
-        // return undefined
-    }
-
-    console.log('the current url is: ' + currentURL);
-
-    //check if page exists. if not, decrement year and reset current page to 0. then call giveNextDate with currentDate again
-    checkPage(currentURL, function(doesExist){
-        if (doesExist == false){
-            //decrement current by a month.
-            console.log("the current date is: " + current.format());
-            current.subtract(1, 'months');
-            console.log("the current date after subtraction is: " + current.format())
-            currentPage = 0
-            giveNextDate(current)
-        }else{
-            nextGroupLink = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
-            // callback(nextGroupLink);
-            console.log("we are stuck")
-            if (nextGroupLink != undefined){
-                console.log("next Group Link is: " + nextGroupLink);
-                //reset array of urls
-                // arrayURLS = [];
-                console.log("<--------------------->");
-                console.log("the nextGroupLink is: ");
-                console.log(nextGroupLink);
-                console.log("<--------------------->");
-                groupScrapeLink(nextGroupLink);
-            }else{
-                console.log("all group links scraped");
-                console.log("the current date is: " + current);
-                console.log(nextGroupLink);
-                return
-            }
-            // return 'https://microcosmos.foldscope.com/?m=' + currentPass.format() + '&paged=' + currentPage;
-        }
-    })
-}
-
-//For group links
-
-function resolveGroupLinks(){
-    if (groupURLArray.length > 0 ) {
-        return groupURLArray.pop();
-    }
-    return undefined;
-}
-
+});
 
 
 function groupScrapeLink(groupURL){
@@ -274,39 +164,6 @@ function groupScrapeLink(groupURL){
             console.log(error);
         }
     });
-}
-
-
-//For each link
-//array of links is arrayURLS
-
-
-//lookup links
-function lookupLink(noteBody, callback){
-    console.log("MORE TIME ADDED");
-    console.log(noteBody);
-    Note.findOne({postURL: noteBody.postURL}, function(err, note){
-        if (note == null){
-            Note.create(noteBody, function(err, note){
-                if (err) {
-                    console.log(err);
-                } else {
-                    callback();
-                }
-            })
-        }else{
-            // callback();
-            console.log("we found a duplicate link and we will stop creating");
-            endOfLinkCreation = true;
-        }
-    })
-}
-
-function resolveLinks() {
-    if (arrayURLS.length > 0 ) {
-        return arrayURLS.pop();
-    }
-    return undefined;
 }
 
 function scraper(url){
@@ -464,6 +321,114 @@ function scraper(url){
             })
         }else{
             console.log("An error occurred with scraping");
+        }
+    });
+}
+
+function resolveLinks() {
+    if (arrayURLS.length > 0 ) {
+        return arrayURLS.pop();
+    }
+    return undefined;
+}
+
+//lookup links
+function lookupLink(noteBody, callback){
+    console.log("MORE TIME ADDED");
+    console.log(noteBody);
+    Note.findOne({postURL: noteBody.postURL}, function(err, note){
+        if (note == null){
+            Note.create(noteBody, function(err, note){
+                if (err) {
+                    console.log(err);
+                } else {
+                    callback();
+                }
+            })
+        }else{
+            // callback();
+            console.log("we found a duplicate link and we will stop creating");
+            endOfLinkCreation = true;
+        }
+    })
+}
+
+
+function giveNextDate(currentPass){
+    console.log("We are in the giveNextDate function");
+    console.log("<--------------------->");
+
+    currentPage = currentPage + 1;
+
+    var currentURL = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
+
+    console.log("the currentPass is: " + currentPass.format());
+    console.log("the final date is: " + finalDate.format());
+
+    //check if we are less than the final date. if so, return undefined
+    if (currentPass < finalDate){
+        console.log("current is less than final");
+        nextGroupLink = undefined;
+        console.log("all group links scraped");
+        console.log("the current date is: " + current);
+        console.log(nextGroupLink);
+        return
+    }
+
+    console.log('the current url is: ' + currentURL);
+
+    //check if page exists. if not, decrement year and reset current page to 0. then call giveNextDate with currentDate again
+    checkPage(currentURL, function(doesExist){
+        if (doesExist == false){
+            //decrement current by a month.
+            console.log("the current date is: " + current.format());
+            current.subtract(1, 'months');
+            console.log("the current date after subtraction is: " + current.format())
+            currentPage = 0
+            giveNextDate(current)
+        }else{
+            nextGroupLink = 'https://microcosmos.foldscope.com/?m=' + currentPass.format('YYYYMM') + '&paged=' + currentPage;
+            // callback(nextGroupLink);
+            console.log("we are stuck")
+            if (nextGroupLink != undefined){
+                console.log("next Group Link is: " + nextGroupLink);
+                //reset array of urls
+                // arrayURLS = [];
+                console.log("<--------------------->");
+                console.log("the nextGroupLink is: ");
+                console.log(nextGroupLink);
+                console.log("<--------------------->");
+                groupScrapeLink(nextGroupLink);
+            }else{
+                console.log("all group links scraped");
+                console.log("the current date is: " + current);
+                console.log(nextGroupLink);
+                return
+            }
+        }
+    })
+}
+
+//to see if page exists
+function checkPage(url, callback){
+    request(url, function(error, response, body){
+        console.log("got to post scrape method");
+        if (!error){
+            var $ = cheerio.load(body); //find all urls
+            var pageExist = $('body').hasClass('error404');
+
+            if (pageExist == true){
+                doesExist = false;
+                console.log("page does NOT exist and calling callback");
+                callback(doesExist);
+            }else{
+                doesExist = true;
+                console.log("page does  exist and calling callback");
+                callback(doesExist);
+            }
+        }else{
+            console.log("An error occurred with scraping");
+            console.log(error);
         }
     });
 }
