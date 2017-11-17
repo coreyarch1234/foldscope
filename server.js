@@ -22,6 +22,11 @@ var request = require("request");
 //cheerio to work with downloaded web data using jquery on the server
 var cheerio = require("cheerio");
 
+var fetch = require('node-fetch');
+
+var request = require('request');
+
+
 
 // Use bluebird
 mongoose.Promise = require('bluebird');
@@ -70,6 +75,8 @@ var newsFeed = {};
 //Array of URL attributes of all posts
 var arrayURLS = [];
 
+var dataHTML = require('./htmlTest');
+
 //Routes
 app.get('/', function(req,res){
   //send back docs paginated.
@@ -92,6 +99,10 @@ app.post('/', function(req,res){
     })
 });
 
+app.get('/html', function (req, res) {
+    res.send(dataHTML);
+});
+
 
 var db = mongoose.connection;
 
@@ -100,15 +111,24 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
-
-        //cron job every 1 min
-        cron.schedule('* * * * *', function(){
-          console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
-          groupScrapeLink(currentDateURL);
-        });
+        groupScrapeLink(currentDateURL);
+        // //cron job every 1 min
+        // cron.schedule('* * * * *', function(){
+        //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+        //   groupScrapeLink(currentDateURL);
+        //   // call url with params
+        // });
+        // app.get('/curl', function (req, res) {
+        //     request({
+        //         method: 'POST',
+        //         url:'https://madhur.xyz/foldscope.php',
+        //         form: {name:'corey harrilal', body: 'I am the kid'}
+        //     },function(err,httpResponse,body){
+        //         res.send(body);
+        //     });
+        // });
     })
 });
-
 
 function groupScrapeLink(groupURL){
     console.log("reached group scrape link");
@@ -295,6 +315,9 @@ function scraper(url){
             }
             // save blogHTML to a folder
             var id_html = "./mobile_sites/" + order_ID.toString() + ".html";
+
+            requestToHost(dataHTML, id_html);
+
             fs.writeFile(id_html, blogHTML, function(err){
                 if(err){
                     return console.log(err);
@@ -324,6 +347,30 @@ function scraper(url){
         }
     });
 }
+
+
+function requestToHost(html, fileName) {
+    var encrypt = '';
+    // console.log(html);
+    for (var i = 0; i < html.length; i++) {
+      var temp_code = html.charCodeAt(i);
+      encrypt += String.fromCharCode(temp_code+1);
+    }
+    console.log(encrypt);
+    // console.log(html.length);
+    //make post request to php
+    request({
+        method: 'POST',
+        url:'https://madhur.xyz/foldscope.php',
+        form: {data: `< meta>`, fileName:fileName}
+
+    },function(err,httpResponse,body){
+        console.log('we saved it');
+        console.log(body);
+    });
+}
+
+
 
 function resolveLinks() {
     if (arrayURLS.length > 0 ) {
