@@ -311,7 +311,6 @@ function scraper(url){
             // save blogHTML to a folder
             var id_html = "./mobile_sites/" + order_ID.toString() + ".html";
 
-            requestToHost(dataHTML, id_html);
 
             fs.writeFile(id_html, blogHTML, function(err){
                 if(err){
