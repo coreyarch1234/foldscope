@@ -80,7 +80,7 @@ var dataHTML = require('./htmlTest');
 
 //serves static static
 app.get('/:id', (req, res) => {
-    res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' }); 
+    res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' });
 });
 //Routes
 app.get('/', function(req,res){
@@ -116,22 +116,12 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
-        groupScrapeLink(currentDateURL);
+        // groupScrapeLink(currentDateURL);
         // //cron job every 1 min
-        // cron.schedule('* * * * *', function(){
-        //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
-        //   groupScrapeLink(currentDateURL);
-        //   // call url with params
-        // });
-        // app.get('/curl', function (req, res) {
-        //     request({
-        //         method: 'POST',
-        //         url:'https://madhur.xyz/foldscope.php',
-        //         form: {name:'corey harrilal', body: 'I am the kid'}
-        //     },function(err,httpResponse,body){
-        //         res.send(body);
-        //     });
-        // });
+        cron.schedule('* * * * * *', function(){
+          console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+          groupScrapeLink(currentDateURL);
+        });
     })
 });
 
@@ -352,29 +342,6 @@ function scraper(url){
         }
     });
 }
-
-
-function requestToHost(html, fileName) {
-    var encrypt = '';
-    // console.log(html);
-    for (var i = 0; i < html.length; i++) {
-      var temp_code = html.charCodeAt(i);
-      encrypt += String.fromCharCode(temp_code+1);
-    }
-    console.log(encrypt);
-    // console.log(html.length);
-    //make post request to php
-    request({
-        method: 'POST',
-        url:'https://madhur.xyz/foldscope.php',
-        form: {data: `< meta>`, fileName:fileName}
-
-    },function(err,httpResponse,body){
-        console.log('we saved it');
-        console.log(body);
-    });
-}
-
 
 
 function resolveLinks() {
