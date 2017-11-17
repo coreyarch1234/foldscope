@@ -85,7 +85,7 @@ app.get('/:id', (req, res) => {
 //Routes
 app.get('/', function(req,res){
   //send back docs paginated.
-  var pageSize = 700;
+  var pageSize = 100;
   var pageNumber = req.body.pageNumber;
   Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
       if (err) throw error;
@@ -96,7 +96,7 @@ app.get('/', function(req,res){
 //route to handle iOS post request
 app.post('/', function(req,res){
     //send back docs paginated
-    var pageSize = 700;
+    var pageSize = 100;
     var pageNumber = req.body.pageNumber;
     Note.find({isWP:true}).sort({"order_ID": -1}).skip(pageSize * (pageNumber - 1)).limit(pageSize).exec(function(err, docs){
         if (err) throw error;
