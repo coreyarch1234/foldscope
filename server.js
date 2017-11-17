@@ -79,8 +79,8 @@ var dataHTML = require('./htmlTest');
 
 
 //serves static static
-app.get('/static', (req, res) => {
-    res.sendFile('96.html', { root: './mobile_sites' }); 
+app.get('/:id', (req, res) => {
+    res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' }); 
 });
 //Routes
 app.get('/', function(req,res){
