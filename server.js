@@ -77,6 +77,11 @@ var arrayURLS = [];
 
 var dataHTML = require('./htmlTest');
 
+
+//serves static static
+app.get('/static', (req, res) => {
+    res.sendFile('96.html', { root: './mobile_sites' }); 
+});
 //Routes
 app.get('/', function(req,res){
   //send back docs paginated.
