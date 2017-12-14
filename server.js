@@ -117,7 +117,7 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
         groupScrapeLink(currentDateURL);
-        // //cron job every 1 min
+        // //cron job every 1 minn
         // cron.schedule('* * * * * *', function(){
         //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
         //   groupScrapeLink(currentDateURL);
