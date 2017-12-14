@@ -116,12 +116,12 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
-        groupScrapeLink(currentDateURL);
+        // groupScrapeLink(currentDateURL);
         // //cron job every 1 min
-        // cron.schedule('* * * * * *', function(){
-        //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
-        //   groupScrapeLink(currentDateURL);
-        // });
+        cron.schedule('* * * * * *', function(){
+          console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+          groupScrapeLink(currentDateURL);
+        });
     })
 });
 
