@@ -78,6 +78,19 @@ var arrayURLS = [];
 var dataHTML = require('./htmlTest');
 
 
+app.get('/start-scrape', (req, res) => {
+    // //cron job every 1 minn
+    // cron.schedule('* * * * *', function(){
+    //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
+    //   groupScrapeLink(currentDateURL);
+    // });
+    fs.writeFile('./public/hello_test2.html', 'hello world test it', function(err){
+        if(err){
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+    })
+})
 //serves static static
 app.get('/:id', (req, res) => {
     res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' });
@@ -91,6 +104,7 @@ app.get('/', function(req,res){
       if (err) throw error;
       res.send(docs)
   })
+
 });
 
 //route to handle iOS post request
