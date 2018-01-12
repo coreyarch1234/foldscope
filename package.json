@@ -27,12 +27,14 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "mongoose": "^4.11.7",
+    "mv": "^2.1.1",
     "node-cron": "^1.2.1",
     "node-datetime": "^2.0.0",
     "node-fetch": "^1.7.3",
     "pdf-text": "^0.4.0",
     "phantom": "^4.0.5",
     "q": "^1.5.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "tmp": "0.0.33"
   }
 }

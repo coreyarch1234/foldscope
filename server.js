@@ -26,6 +26,11 @@ var fetch = require('node-fetch');
 
 var request = require('request');
 
+var tmp = require('tmp');
+
+var mv = require('mv');
+
+
 
 
 // Use bluebird
@@ -83,13 +88,50 @@ app.get('/start-scrape', (req, res) => {
     // cron.schedule('* * * * *', function(){
     //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
     //   groupScrapeLink(currentDateURL);
-    // });
-    fs.writeFile('./public/hello_test2.html', 'hello world test it', function(err){
-        if(err){
-            return console.log(err);
-        }
-        console.log("The file was saved!");
-    })
+    // // });
+    // fs.writeFile('./public/hello_test2.html', 'hello world test it', function(err){
+    //     if(err){
+    //         return console.log(err);
+    //     }
+    //     console.log("The file was saved!");
+    // })
+
+    tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
+      if (err) throw err;
+
+      console.log('File: ', path);
+      console.log('Filedescriptor: ', fd);
+
+      console.log("****** wrote to temp *****")
+
+      fs.writeFile(path, 'MOVING CONTENT TO PRODUCTION', function(err){
+          if(err){
+              return console.log(err);
+          }
+          console.log(" ----- wrote to path ------");
+          //move to my own
+          mv(path, './public/heroku_production_test.html', function(err) {
+              // done. it tried fs.rename first, and then falls back to
+              // piping the source file to the dest file and then unlinking
+              // the source file.
+              if (err) {
+                  console.log(err);
+                  return
+              }
+              console.log("&&&&&& moved to folder &&&&&& ")
+              cleanupCallback();
+          });
+
+          // cleanupCallback();
+          // console.log("The file was saved!");
+      })
+
+
+      // If we don't need the file anymore we could manually call the cleanupCallback
+      // But that is not necessary if we didn't pass the keep option because the library
+      // will clean after itself.
+      // cleanupCallback();
+    });
 })
 //serves static static
 app.get('/:id', (req, res) => {
