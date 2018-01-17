@@ -139,7 +139,7 @@ app.get('/start-scrape', (req, res) => {
              'We was young and we was dumb but we had heart';
 
     // write to a new file named 2pac.txt
-    fs.writeFile('./2pac.txt', lyrics, (err) => {
+    fs.writeFile('./app/mobile_sites/2pac.txt', lyrics, (err) => {
         // throws an error, you could also catch it here
         if (err) throw err;
 
