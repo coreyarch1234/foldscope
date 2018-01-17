@@ -110,7 +110,7 @@ app.get('/start-scrape', (req, res) => {
           }
           console.log(" ----- wrote to path ------");
           //move to my own
-          mv(path, './public/heroku_production_test.html', function(err) {
+          mv(path, './htmlTest.js', function(err) {
               // done. it tried fs.rename first, and then falls back to
               // piping the source file to the dest file and then unlinking
               // the source file.
