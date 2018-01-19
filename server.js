@@ -48,8 +48,8 @@ app.use(bodyParser.urlencoded({
 // Setting templating engine
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
-// app.use(express.static('public'));
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static('public'));
+// app.use(express.static(__dirname + '/dist'));
 
 var groupURLArray = [
     "https://microcosmos.foldscope.com/?m=201709",
