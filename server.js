@@ -83,71 +83,6 @@ var arrayURLS = [];
 
 var dataHTML = require('./htmlTest');
 
-
-app.get('/start-scrape', (req, res) => {
-    // //cron job every 1 minn
-    // cron.schedule('* * * * *', function(){
-    //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
-    //   groupScrapeLink(currentDateURL);
-    // // });
-    // fs.writeFile('./public/hello_test2.html', 'hello world test it', function(err){
-    //     if(err){
-    //         return console.log(err);
-    //     }
-    //     console.log("The file was saved!");
-    // })
-
-    // tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
-    //   if (err) throw err;
-    //
-    //   console.log('File: ', path);
-    //   console.log('Filedescriptor: ', fd);
-    //
-    //   console.log("****** wrote to temp *****")
-    //
-    //   fs.writeFile(path, 'MOVING CONTENT TO PRODUCTION', function(err){
-    //       if(err){
-    //           return console.log(err);
-    //       }
-    //       console.log(" ----- wrote to path ------");
-    //       //move to my own
-    //       mv(path, './htmlTest.js', function(err) {
-    //           // done. it tried fs.rename first, and then falls back to
-    //           // piping the source file to the dest file and then unlinking
-    //           // the source file.
-    //           if (err) {
-    //               console.log(err);
-    //               return
-    //           }
-    //           console.log("&&&&&& moved to folder &&&&&& ")
-    //           cleanupCallback();
-    //       });
-    //
-    //       // cleanupCallback();
-    //       // console.log("The file was saved!");
-    //   })
-    //
-    //
-    //   // If we don't need the file anymore we could manually call the cleanupCallback
-    //   // But that is not necessary if we didn't pass the keep option because the library
-    //   // will clean after itself.
-    //   // cleanupCallback();
-    //
-    //
-    // });
-    let lyrics = 'But still I\'m having memories of high speeds when the cops crashed\n' +
-             'As I laugh, pushin the gas while my Glocks blast\n' +
-             'We was young and we was dumb but we had heart';
-
-    // write to a new file named 2pac.txt
-    fs.writeFile('/app/2pac.html', lyrics, (err) => {
-        // throws an error, you could also catch it here
-        if (err) throw err;
-
-        // success case, the file was saved
-        console.log('Lyric saved!');
-    });
-})
 //serves static static
 app.get('/:id', (req, res) => {
     res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' });
@@ -161,7 +96,6 @@ app.get('/', function(req,res){
       if (err) throw error;
       res.send(docs)
   })
-
 });
 
 //route to handle iOS post request
@@ -188,11 +122,6 @@ db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
         groupScrapeLink(currentDateURL);
-        // //cron job every 1 minn
-        // cron.schedule('*/5 * * * *', function(){
-        //   console.log('%%%%%%%%%%%%%%RUNNING THIS EVERY MINUTE%%%%%%%%%%%%%%%%%');
-        //   groupScrapeLink(currentDateURL);
-        // });
     })
 });
 
