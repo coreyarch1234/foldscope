@@ -81,12 +81,7 @@ var newsFeed = {};
 //Array of URL attributes of all posts
 var arrayURLS = [];
 
-var dataHTML = require('./htmlTest');
 
-//serves static static
-app.get('/:id', (req, res) => {
-    res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' });
-});
 //Routes
 app.get('/', function(req,res){
   //send back docs paginated.
@@ -109,8 +104,14 @@ app.post('/', function(req,res){
     })
 });
 
-app.get('/html', function (req, res) {
-    res.send(dataHTML);
+
+app.get('/chart', (req, res) => {
+    res.render('layouts/chart');
+});
+
+//serves static static
+app.get('/:id', (req, res) => {
+    res.sendFile(`${req.params.id}.html`, { root: './mobile_sites' });
 });
 
 
@@ -121,7 +122,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     app.listen(process.env.PORT || port, function() {
         console.log("env port" + process.env.PORT);
-        groupScrapeLink(currentDateURL);
+        // groupScrapeLink(currentDateURL);
     })
 });
 
